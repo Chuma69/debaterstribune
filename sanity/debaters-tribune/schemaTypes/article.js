@@ -1,27 +1,94 @@
 // schemas/article.js
+const CIRCUIT_LIST = [
+  { title: 'West Africa',    value: 'West Africa' },
+  { title: 'East Africa',    value: 'East Africa' },
+  { title: 'South Africa',   value: 'South Africa' },
+  { title: 'Europe',         value: 'Europe' },
+  { title: 'North America',  value: 'North America' },
+  { title: 'South America',  value: 'South America' },
+  { title: 'South Asia',     value: 'South Asia' },
+  { title: 'Southeast Asia', value: 'Southeast Asia' },
+  { title: 'Pan-African',    value: 'Pan-African' },
+  { title: 'WSDC',           value: 'WSDC' },
+  { title: 'WUDC',           value: 'WUDC' },
+];
+
 export default {
   name: 'article',
   title: 'Article',
   type: 'document',
   groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'meta', title: 'Meta & Publishing' },
-    { name: 'media', title: 'Media' },
+    { name: 'classification', title: 'Classification', default: true },
+    { name: 'content',        title: 'Content' },
+    { name: 'publishing',     title: 'Publishing' },
+    { name: 'media',          title: 'Media' },
   ],
   fields: [
+
+    // ── Classification (first — editors pick type before writing) ─────────────
+    {
+      name: 'section',
+      title: 'Type of piece',
+      description: 'Which section of the Tribune this belongs to.',
+      type: 'string',
+      group: 'classification',
+      options: {
+        list: [
+          { title: '01 — Essay  (personal reflection, first-person)',     value: 'essays' },
+          { title: '02 — History  (circuits, rivalries, eras)',           value: 'histories' },
+          { title: '03 — Beyond  (life after the circuit)',               value: 'beyond' },
+        ],
+        layout: 'radio',
+      },
+      validation: R => R.required(),
+    },
+    {
+      name: 'franchise',
+      title: 'Franchise / series',
+      description: 'Optional recurring series this piece belongs to.',
+      type: 'string',
+      group: 'classification',
+      options: {
+        list: [
+          { title: 'The Ballot — one round that defined them',       value: 'the-ballot' },
+          { title: 'Prep Room — what goes on behind the scenes',     value: 'prep-room' },
+          { title: 'First Affirmative — origin stories',            value: 'first-affirmative' },
+          { title: 'Final Rebuttal — farewell essays',              value: 'final-rebuttal' },
+          { title: 'Unpopular Truths — challenging the norms',      value: 'unpopular-truths' },
+        ],
+      },
+    },
+    {
+      name: 'circuit',
+      title: 'Circuit / region',
+      description: 'The primary circuit this story is set in or speaks to.',
+      type: 'string',
+      group: 'classification',
+      options: { list: CIRCUIT_LIST },
+    },
+    {
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      group: 'classification',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'tags',
+        list: [
+          'identity', 'competition', 'aftermath', 'burnout', 'ambition',
+          'coaching', 'growth', 'pressure', 'circuits', 'memory', 'access',
+          'judging', 'prep-room', 'elitism', 'transition', 'friendship',
+          'community', 'beyond',
+        ],
+      },
+    },
+
+    // ── Content ───────────────────────────────────────────────────────────────
     {
       name: 'title',
       title: 'Title',
       type: 'string',
       group: 'content',
-      validation: R => R.required(),
-    },
-    {
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      group: 'meta',
-      options: { source: 'title', maxLength: 96 },
       validation: R => R.required(),
     },
     {
@@ -34,18 +101,35 @@ export default {
       validation: R => R.required().max(200),
     },
     {
-      name: 'section',
-      title: 'Section',
-      type: 'string',
-      group: 'meta',
-      options: {
-        list: [
-          { title: 'Essays', value: 'essays' },
-          { title: 'Histories', value: 'histories' },
-          { title: 'Beyond', value: 'beyond' },
-        ],
-        layout: 'radio',
-      },
+      name: 'body',
+      title: 'Body',
+      type: 'array',
+      group: 'content',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Paragraph',      value: 'normal' },
+            { title: 'Section heading', value: 'h2' },
+            { title: 'Pull quote',     value: 'blockquote' },
+          ],
+          marks: {
+            decorators: [
+              { title: 'Italic', value: 'em' },
+              { title: 'Bold',   value: 'strong' },
+            ],
+          },
+        },
+      ],
+    },
+
+    // ── Publishing ────────────────────────────────────────────────────────────
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      group: 'publishing',
+      options: { source: 'title', maxLength: 96 },
       validation: R => R.required(),
     },
     {
@@ -53,14 +137,14 @@ export default {
       title: 'Author',
       type: 'reference',
       to: [{ type: 'contributor' }],
-      group: 'meta',
+      group: 'publishing',
       validation: R => R.required(),
     },
     {
       name: 'date',
       title: 'Publication date',
       type: 'date',
-      group: 'meta',
+      group: 'publishing',
       options: { dateFormat: 'MMMM D, YYYY' },
       validation: R => R.required(),
     },
@@ -68,45 +152,18 @@ export default {
       name: 'read',
       title: 'Read time (minutes)',
       type: 'number',
-      group: 'meta',
+      group: 'publishing',
       validation: R => R.required().min(1).max(60),
-    },
-    {
-      name: 'audio',
-      title: 'Audio duration (MM:SS)',
-      description: 'e.g. 14:22',
-      type: 'string',
-      group: 'media',
-    },
-    {
-      name: 'circuit',
-      title: 'Circuit / region',
-      type: 'string',
-      group: 'meta',
-      options: {
-        list: [
-          'West Africa', 'East Africa', 'South Africa',
-          'Europe', 'North America', 'South America',
-          'South Asia', 'Southeast Asia',
-        ],
-      },
-    },
-    {
-      name: 'hue',
-      title: 'Accent hue (0–360)',
-      description: 'Controls the duotone colour of the cover image. 280 = violet.',
-      type: 'number',
-      group: 'media',
-      initialValue: 280,
-      validation: R => R.min(0).max(360),
     },
     {
       name: 'feature',
       title: 'Feature on home page?',
       type: 'boolean',
-      group: 'meta',
+      group: 'publishing',
       initialValue: false,
     },
+
+    // ── Media ─────────────────────────────────────────────────────────────────
     {
       name: 'coverImage',
       title: 'Cover image',
@@ -122,64 +179,61 @@ export default {
       ],
     },
     {
-      name: 'tags',
-      title: 'Tags',
-      type: 'array',
-      group: 'meta',
-      of: [{ type: 'string' }],
+      name: 'audioFile',
+      title: 'Audio file',
+      description: 'Upload an MP3 or M4A recording of the story being read aloud.',
+      type: 'file',
+      group: 'media',
       options: {
-        layout: 'tags',
-        list: [
-          'identity', 'competition', 'aftermath', 'burnout', 'ambition',
-          'coaching', 'growth', 'pressure', 'circuits', 'memory', 'access',
-          'judging', 'prep-room', 'elitism', 'transition', 'friendship',
-          'community', 'beyond',
-        ],
+        accept: 'audio/*',
       },
     },
     {
-      name: 'body',
-      title: 'Body',
-      type: 'array',
-      group: 'content',
-      of: [
-        {
-          type: 'block',
-          styles: [
-            { title: 'Paragraph', value: 'normal' },
-            { title: 'Section heading', value: 'h2' },
-            { title: 'Pull quote', value: 'blockquote' },
-          ],
-          marks: {
-            decorators: [
-              { title: 'Italic', value: 'em' },
-              { title: 'Bold', value: 'strong' },
-            ],
-          },
-        },
-      ],
+      name: 'audio',
+      title: 'Audio duration (MM:SS)',
+      description: 'e.g. 14:22 — displayed in the player. Auto-filled if you know the length; otherwise leave blank.',
+      type: 'string',
+      group: 'media',
+    },
+    {
+      name: 'hue',
+      title: 'Accent hue (0–360)',
+      description: 'Controls the duotone colour of the cover image. 280 = violet.',
+      type: 'number',
+      group: 'media',
+      initialValue: 280,
+      validation: R => R.min(0).max(360),
     },
   ],
+
   preview: {
     select: {
-      title: 'title',
-      author: 'author.name',
+      title:   'title',
+      author:  'author.name',
       section: 'section',
-      media: 'coverImage',
+      circuit: 'circuit',
+      media:   'coverImage',
     },
-    prepare({ title, author, section, media }) {
+    prepare({ title, author, section, circuit, media }) {
+      const sectionMap = { essays: 'Essay', histories: 'History', beyond: 'Beyond' };
       return {
         title,
-        subtitle: `${section ? section.toUpperCase() : ''} · ${author || 'No author'}`,
+        subtitle: [sectionMap[section], circuit, author].filter(Boolean).join(' · '),
         media,
       };
     },
   },
+
   orderings: [
     {
       title: 'Publication date, newest first',
       name: 'dateDesc',
       by: [{ field: 'date', direction: 'desc' }],
+    },
+    {
+      title: 'Type of piece',
+      name: 'sectionAsc',
+      by: [{ field: 'section', direction: 'asc' }],
     },
   ],
 };
