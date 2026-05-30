@@ -2,15 +2,15 @@
 const CIRCUIT_LIST = [
   { title: 'West Africa',    value: 'West Africa' },
   { title: 'East Africa',    value: 'East Africa' },
-  { title: 'South Africa',   value: 'South Africa' },
+  { title: 'Southern Africa',value: 'Southern Africa' },
+  { title: 'North Africa',   value: 'North Africa' },
   { title: 'Europe',         value: 'Europe' },
   { title: 'North America',  value: 'North America' },
   { title: 'South America',  value: 'South America' },
   { title: 'South Asia',     value: 'South Asia' },
   { title: 'Southeast Asia', value: 'Southeast Asia' },
-  { title: 'Pan-African',    value: 'Pan-African' },
-  { title: 'WSDC',           value: 'WSDC' },
-  { title: 'WUDC',           value: 'WUDC' },
+  { title: 'Middle East',    value: 'Middle East' },
+  { title: 'Global',         value: 'Global' },
 ];
 
 export default {
@@ -50,7 +50,7 @@ export default {
     },
     {
       name: 'region',
-      title: 'City / country',
+      title: 'Region / city',
       description: 'e.g. "Nairobi, Kenya"',
       type: 'string',
       group: 'identity',
@@ -84,7 +84,7 @@ export default {
     },
     {
       name: 'circuit',
-      title: 'Primary circuit',
+      title: 'Circuit',
       description: 'The main circuit they competed in or are most associated with.',
       type: 'string',
       group: 'debate',
@@ -146,16 +146,12 @@ export default {
       title:   'name',
       byline:  'byline',
       circuit: 'circuit',
-      sections:'sections',
       media:   'photo',
     },
-    prepare({ title, byline, circuit, sections, media }) {
-      const sectionLabel = sections?.length
-        ? sections.map(s => s[0].toUpperCase() + s.slice(1)).join(' · ')
-        : '—';
+    prepare({ title, byline, circuit, media }) {
       return {
         title,
-        subtitle: [byline, circuit, sectionLabel].filter(Boolean).join(' · '),
+        subtitle: [byline, circuit].filter(Boolean).join(' · '),
         media,
       };
     },
