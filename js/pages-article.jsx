@@ -1,51 +1,112 @@
 // pages-article.jsx
-const { useState:useSA, useEffect:useEA } = React;
+const { useState:useSA, useEffect:useEA, useRef:useRA } = React;
 
-function parseDur(s){ const [m,sec]=s.split(":").map(Number); return m*60+sec; }
+function parseDur(s){ if(!s) return 0; const [m,sec]=s.split(":").map(Number); return m*60+(sec||0); }
 function fmt(t){ const m=Math.floor(t/60), s=Math.floor(t%60); return m+":"+String(s).padStart(2,"0"); }
 
 function AudioPlayer({ article, author }){
-  const total = parseDur(article.audio);
-  const [playing,setPlaying] = useSA(false);
-  const [t,setT] = useSA(0);
-  const [rate,setRate] = useSA(1);
+  const audioRef = useRA(null);
+  const hasFile = !!article.audioUrl;
+
+  const [playing, setPlaying] = useSA(false);
+  const [t, setT]             = useSA(0);
+  const [total, setTotal]     = useSA(()=> parseDur(article.audio) || 0);
+  const [rate, setRate]       = useSA(1);
+
+  // ── Real audio element (when Sanity audio URL is present) ────────────────
   useEA(()=>{
-    if(!playing) return;
+    if(!hasFile) return;
+    const el = audioRef.current;
+    if(!el) return;
+    const onMeta  = ()=> setTotal(el.duration || 0);
+    const onTime  = ()=> setT(el.currentTime);
+    const onEnded = ()=> setPlaying(false);
+    el.addEventListener("loadedmetadata", onMeta);
+    el.addEventListener("timeupdate",     onTime);
+    el.addEventListener("ended",          onEnded);
+    return ()=>{
+      el.removeEventListener("loadedmetadata", onMeta);
+      el.removeEventListener("timeupdate",     onTime);
+      el.removeEventListener("ended",          onEnded);
+    };
+  }, [hasFile, article.audioUrl]);
+
+  useEA(()=>{
+    if(!hasFile) return;
+    const el = audioRef.current; if(!el) return;
+    if(playing){ el.play(); } else { el.pause(); }
+  }, [playing, hasFile]);
+
+  useEA(()=>{
+    if(!hasFile) return;
+    const el = audioRef.current; if(!el) return;
+    el.playbackRate = rate;
+  }, [rate, hasFile]);
+
+  // ── Simulated timer (static data fallback, no real file) ─────────────────
+  useEA(()=>{
+    if(hasFile || !playing) return;
     const id = setInterval(()=>{
       setT(prev=>{ const n=prev+rate; if(n>=total){ setPlaying(false); return total; } return n; });
-    },1000);
-    return ()=>clearInterval(id);
-  },[playing,rate,total]);
-  const pct = (t/total)*100;
+    }, 1000);
+    return ()=> clearInterval(id);
+  }, [playing, rate, total, hasFile]);
+
+  const pct = total > 0 ? (t / total) * 100 : 0;
+
   const seek = (e)=>{
     const r = e.currentTarget.getBoundingClientRect();
-    setT(Math.max(0,Math.min(total,((e.clientX-r.left)/r.width)*total)));
+    const newT = Math.max(0, Math.min(total, ((e.clientX - r.left) / r.width) * total));
+    setT(newT);
+    if(hasFile && audioRef.current) audioRef.current.currentTime = newT;
   };
+
+  const togglePlay = ()=> setPlaying(p => !p);
+  const cycleRate  = ()=>{
+    const next = rate === 1 ? 1.5 : rate === 1.5 ? 2 : 1;
+    setRate(next);
+  };
+
   return (
-    <div style={{border:"1px solid var(--hair)",borderRadius:3,padding:"16px 18px",display:"flex",alignItems:"center",gap:16,
+    <div style={{border:"1px solid var(--hair)",borderRadius:3,padding:"16px 18px",
+      display:"flex",alignItems:"center",gap:16,
       background:"color-mix(in oklab, var(--bg), var(--accent) 3%)"}}>
-      <button onClick={()=>setPlaying(p=>!p)} aria-label={playing?"Pause":"Play"}
-        style={{flex:"0 0 auto",width:46,height:46,borderRadius:"50%",background:"var(--accent)",color:"#fff",display:"grid",placeItems:"center"}}>
+
+      {/* hidden real audio element */}
+      {hasFile && <audio ref={audioRef} src={article.audioUrl} preload="metadata" style={{display:"none"}}/>}
+
+      <button onClick={togglePlay} aria-label={playing?"Pause":"Play"}
+        style={{flex:"0 0 auto",width:46,height:46,borderRadius:"50%",
+          background:"var(--accent)",color:"#fff",display:"grid",placeItems:"center"}}>
         {playing
           ? <svg width="14" height="14" viewBox="0 0 12 12"><rect x="2" y="1" width="3" height="10" fill="#fff"/><rect x="7" y="1" width="3" height="10" fill="#fff"/></svg>
           : <svg width="14" height="14" viewBox="0 0 12 12" style={{marginLeft:2}}><polygon points="2,1 11,6 2,11" fill="#fff"/></svg>}
       </button>
+
       <div style={{flex:1,minWidth:0}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
           <span className="label" style={{color:"var(--fg)"}}>Listen to this story</span>
-          <span className="mono" style={{fontSize:11,color:"var(--fg-muted)"}}>read by {author?.name?.split(" ")[0]}</span>
+          <span className="mono" style={{fontSize:11,color:"var(--fg-muted)"}}>
+            {hasFile ? "read by " + (author?.name?.split(" ")[0] || "author") : "preview · no audio uploaded"}
+          </span>
         </div>
-        <div onClick={seek} style={{height:5,background:"var(--hair)",borderRadius:3,position:"relative",cursor:"pointer"}}>
-          <div style={{position:"absolute",inset:0,width:pct+"%",background:"var(--accent)",borderRadius:3}}></div>
-          <div style={{position:"absolute",top:"50%",left:pct+"%",transform:"translate(-50%,-50%)",
-            width:12,height:12,borderRadius:"50%",background:"var(--accent)",border:"2px solid var(--bg)"}}></div>
+        <div onClick={seek} style={{height:5,background:"var(--hair)",borderRadius:3,
+          position:"relative",cursor:"pointer"}}>
+          <div style={{position:"absolute",inset:0,width:pct+"%",background:"var(--accent)",borderRadius:3}}/>
+          <div style={{position:"absolute",top:"50%",left:pct+"%",
+            transform:"translate(-50%,-50%)",width:12,height:12,borderRadius:"50%",
+            background:"var(--accent)",border:"2px solid var(--bg)"}}/>
         </div>
-        <div className="mono" style={{display:"flex",justifyContent:"space-between",fontSize:10.5,color:"var(--fg-muted)",marginTop:7}}>
-          <span>{fmt(t)}</span><span>-{fmt(total-t)}</span>
+        <div className="mono" style={{display:"flex",justifyContent:"space-between",
+          fontSize:10.5,color:"var(--fg-muted)",marginTop:7}}>
+          <span>{fmt(t)}</span>
+          <span>-{total > 0 ? fmt(total - t) : "--:--"}</span>
         </div>
       </div>
-      <button onClick={()=>setRate(r=> r===1?1.5: r===1.5?2:1)} className="mono"
-        style={{flex:"0 0 auto",fontSize:11,border:"1px solid var(--hair)",borderRadius:2,padding:"7px 9px"}}>{rate}×</button>
+
+      <button onClick={cycleRate} className="mono"
+        style={{flex:"0 0 auto",fontSize:11,border:"1px solid var(--hair)",
+          borderRadius:2,padding:"7px 9px"}}>{rate}×</button>
     </div>
   );
 }

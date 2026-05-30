@@ -27,6 +27,7 @@ const ARTICLE_QUERY = `
     read, audio, circuit, hue, feature, tags,
     "img": coverImage.alt,
     "coverUrl": coverImage.asset->url,
+    "audioUrl": audioFile.asset->url,
     body
   }
 `;

@@ -179,9 +179,19 @@ export default {
       ],
     },
     {
+      name: 'audioFile',
+      title: 'Audio file',
+      description: 'Upload an MP3 or M4A recording of the story being read aloud.',
+      type: 'file',
+      group: 'media',
+      options: {
+        accept: 'audio/*',
+      },
+    },
+    {
       name: 'audio',
       title: 'Audio duration (MM:SS)',
-      description: 'e.g. 14:22 — used for the audio player widget.',
+      description: 'e.g. 14:22 — displayed in the player. Auto-filled if you know the length; otherwise leave blank.',
       type: 'string',
       group: 'media',
     },
