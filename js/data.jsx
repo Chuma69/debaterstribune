@@ -280,7 +280,22 @@ Object.assign(window, {
   contributor, articlesByAuthor, searchArticles
 });
 
+// If the contributor has explicit circuits from Sanity, use those.
+// Otherwise derive from the circuits of their articles (static data fallback).
 function contributorCircuits(id){
+  const c = contributor(id);
+  // Sanity now stores a single `circuit` string (dropdown) on the contributor
+  if(c && c.circuit) return [c.circuit];
+  // Fall back: derive from the circuits of their articles
   return [...new Set(articlesByAuthor(id).map(a=>a.circuit).filter(Boolean))];
 }
-Object.assign(window, { contributorCircuits });
+
+// Returns the sections a contributor writes for.
+// Uses the Sanity `sections` field if present, else derives from their articles.
+function contributorSections(id){
+  const c = contributor(id);
+  if(c && c.sections && c.sections.length) return c.sections;
+  return [...new Set(articlesByAuthor(id).map(a=>a.section).filter(Boolean))];
+}
+
+Object.assign(window, { contributorCircuits, contributorSections });

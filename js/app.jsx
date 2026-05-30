@@ -161,6 +161,22 @@ function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [route, setRoute] = useS(parseRoute());
   const [searchOpen, setSearchOpen] = useS(false);
+  const [cmsReady, setCmsReady] = useS(false);
+
+  // On mount: try to load content from Sanity.
+  // If not configured (or fetch fails), falls back to the static data already in window.*
+  useE(() => {
+    loadFromSanity().then(data => {
+      if (data) {
+        // Overwrite the static globals with live Sanity content
+        Object.assign(window, {
+          ARTICLES: data.articles,
+          CONTRIBUTORS: data.contributors,
+        });
+      }
+      setCmsReady(true);
+    });
+  }, []);
 
   useE(() => {
     const on = () => setRoute(parseRoute());
@@ -183,6 +199,9 @@ function App() {
     document.body.classList.toggle("type-grand", t.headline === "grand");
     document.documentElement.classList.toggle("do-reveal", !!t.reveal);
   }, [t]);
+
+  // While waiting for the CMS check, show nothing (loading screen is still visible)
+  if (!cmsReady) return null;
 
   const homeDark = route.name === "home" && t.frontTheme === "dark";
 

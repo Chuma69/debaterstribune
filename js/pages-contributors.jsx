@@ -89,6 +89,8 @@ function ContributorsPage(){
               const hue = pieces[0]?.hue || 280;
               const cover = pieces[0] ? "images/cover-"+pieces[0].slug+".jpg" : null;
               const circuits = contributorCircuits(p.id);
+              const sections = contributorSections(p.id);
+              const SECTION_LABELS = { essays:"Essays", histories:"Histories", beyond:"Beyond" };
               return (
                 <a key={p.id} href={"#/contributor/"+p.id}
                   onClick={(e)=>{e.preventDefault();go("/contributor/"+p.id);}}
@@ -107,6 +109,19 @@ function ContributorsPage(){
                     </div>
                     <p style={{fontFamily:"var(--ff-body)",fontSize:16,lineHeight:1.5,
                       color:"var(--fg-muted)",marginTop:12,maxWidth:"42ch"}}>{p.bio}</p>
+                    {/* sections badges */}
+                    {sections.length > 0 && (
+                      <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:12}}>
+                        {sections.map(s=>(
+                          <span key={s} className="mono" style={{fontSize:9.5,
+                            letterSpacing:"0.1em",textTransform:"uppercase",
+                            color:"var(--accent)",border:"1px solid var(--accent)",
+                            borderRadius:2,padding:"3px 8px"}}>
+                            {SECTION_LABELS[s]||s}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     <div style={{display:"flex",alignItems:"center",gap:12,
                       flexWrap:"wrap",marginTop:14}}>
                       <span className="mono" style={{fontSize:11,letterSpacing:"0.08em",
