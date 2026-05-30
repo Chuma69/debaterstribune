@@ -59,9 +59,9 @@ export default {
 
     // ── Debate background ─────────────────────────────────────────────────────
     {
-      name: 'role',
-      title: 'Debate role / credential',
-      description: 'e.g. "Two-time octofinalist" or "Adjudicator, AP & BP"',
+      name: 'byline',
+      title: 'Byline',
+      description: 'Shown under their name everywhere. e.g. "Two-time octofinalist" or "Coach, West Africa circuit"',
       type: 'string',
       group: 'debate',
       validation: R => R.required(),
@@ -144,18 +144,18 @@ export default {
   preview: {
     select: {
       title:   'name',
-      region:  'region',
+      byline:  'byline',
       circuit: 'circuit',
       sections:'sections',
       media:   'photo',
     },
-    prepare({ title, region, circuit, sections, media }) {
+    prepare({ title, byline, circuit, sections, media }) {
       const sectionLabel = sections?.length
         ? sections.map(s => s[0].toUpperCase() + s.slice(1)).join(' · ')
         : '—';
       return {
         title,
-        subtitle: [region, circuit, sectionLabel].filter(Boolean).join(' · '),
+        subtitle: [byline, circuit, sectionLabel].filter(Boolean).join(' · '),
         media,
       };
     },

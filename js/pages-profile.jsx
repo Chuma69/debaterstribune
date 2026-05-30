@@ -30,7 +30,7 @@ function ProfilePage({ id }){
 
             {/* role + region */}
             <div className="label" style={{display:"flex",gap:14,flexWrap:"wrap",marginTop:16}}>
-              <span style={{color:"var(--accent)"}}>{c.role}</span>
+              <span style={{color:"var(--accent)"}}>{c.byline}</span>
               <span>·</span>
               <span>{c.region}</span>
               {c.debaterType && (<><span>·</span><span style={{textTransform:"capitalize"}}>{c.debaterType}</span></>)}

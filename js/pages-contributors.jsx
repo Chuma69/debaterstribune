@@ -12,7 +12,7 @@ function ContributorsPage(){
       const circuits = contributorCircuits(p.id);
       if(circuit!=="all" && !circuits.includes(circuit)) return false;
       if(q.trim()){
-        const hay = (p.name+" "+p.role+" "+p.region+" "+p.bio+" "+circuits.join(" ")).toLowerCase();
+        const hay = (p.name+" "+p.byline+" "+p.region+" "+p.bio+" "+circuits.join(" ")).toLowerCase();
         if(!hay.includes(q.toLowerCase())) return false;
       }
       return true;
@@ -104,7 +104,7 @@ function ContributorsPage(){
                     <div style={{fontFamily:"var(--ff-display)",fontWeight:700,
                       fontSize:"clamp(22px,2.2vw,28px)",lineHeight:1.05}}>{p.name}</div>
                     <div className="label" style={{display:"flex",gap:14,flexWrap:"wrap",marginTop:8}}>
-                      <span style={{color:"var(--accent)"}}>{p.role}</span>
+                      <span style={{color:"var(--accent)"}}>{p.byline}</span>
                       <span>{p.region}</span>
                     </div>
                     <p style={{fontFamily:"var(--ff-body)",fontSize:16,lineHeight:1.5,

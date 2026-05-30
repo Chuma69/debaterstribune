@@ -12,7 +12,7 @@ const SANITY_API_VERSION = '2024-01-01';
 const CONTRIBUTOR_QUERY = `
   *[_type == "contributor"] | order(name asc) {
     "id": slug.current,
-    name, role, region, bio,
+    name, byline, region, bio,
     circuit, formats, debaterType, sections,
     "photo": photo.asset->url
   }
