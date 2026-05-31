@@ -167,15 +167,12 @@ function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [route, setRoute] = useS(parseRoute());
   const [searchOpen, setSearchOpen] = useS(false);
-  const [cmsReady, setCmsReady] = useS(false);
+  const [cmsReady, setCmsReady] = useS(true); // render immediately with static data
 
-  // On mount: try to load content from Sanity.
-  // If not configured (or fetch fails), falls back to the static data already in window.*
+  // On mount: try to load live content from Sanity in the background.
+  // Static placeholders are always visible — Sanity content swaps in if available.
   useE(() => {
     loadFromSanity().then(data => {
-      // Only swap in Sanity data if there's actually content published.
-      // If the Studio is empty, keep the static placeholders so the site
-      // always has something to show.
       const hasArticles      = data?.articles?.length > 0;
       const hasContributors  = data && Object.keys(data.contributors).length > 0;
       if (hasArticles)     window.ARTICLES      = data.articles;
@@ -205,9 +202,6 @@ function App() {
     document.body.classList.toggle("type-grand", t.headline === "grand");
     document.documentElement.classList.toggle("do-reveal", !!t.reveal);
   }, [t]);
-
-  // While waiting for the CMS check, show nothing (loading screen is still visible)
-  if (!cmsReady) return null;
 
   const homeDark = route.name === "home" && t.frontTheme === "dark";
 
