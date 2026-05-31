@@ -9,10 +9,10 @@ async function submitToNotion(f) {
   const SECTION_NAMES = { essays:"Essays", histories:"Histories", beyond:"Beyond" };
   const FORMAT_NAMES  = { draft:"I have a draft", voice:"A voice note", interview:"Interview me", idea:"Just an idea" };
 
-  // Build draft note for the summary field
-  let draftNote = "";
-  if (f.draftLink) draftNote = "\n\nDraft link: " + f.draftLink;
-  if (f.draftFile) draftNote += "\n\nDraft file attached: " + f.draftFile.name + " (" + (f.draftFile.size/1024).toFixed(0) + " KB) — request from contributor via email.";
+  // Draft info goes into dedicated fields — not appended to Story
+  const draftFileNote = f.draftFile
+    ? f.draftFile.name + " (" + (f.draftFile.size/1024).toFixed(0) + " KB) — request via email"
+    : "";
 
   const body = {
     parent: { database_id: NOTION_DB_ID },
@@ -24,7 +24,9 @@ async function submitToNotion(f) {
       "Title":                { rich_text: [{ text: { content: f.title } }] },
       "Section":              { select:    { name: SECTION_NAMES[f.section] || f.section } },
       "Format":               { select:    { name: FORMAT_NAMES[f.format] || f.format } },
-      "Story":                { rich_text: [{ text: { content: f.summary + draftNote } }] },
+      "Story":                { rich_text: [{ text: { content: f.summary } }] },
+      "Draft link":           { url:       f.draftLink || null },
+      "Draft file":           { rich_text: draftFileNote ? [{ text: { content: draftFileNote } }] : [] },
       "Need Editor support?": { checkbox:  f.support },
       "Submitted":            { date:      { start: new Date().toISOString().slice(0,10) } },
       "Status":               { select:    { name: "New" } },
