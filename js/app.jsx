@@ -241,6 +241,22 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+class ErrorBoundary extends React.Component {
+  constructor(p){ super(p); this.state={err:null}; }
+  static getDerivedStateFromError(e){ return {err:e}; }
+  render(){
+    if(this.state.err) return (
+      <div style={{padding:"60px 32px",fontFamily:"monospace",fontSize:14,color:"#d6455f",maxWidth:800,margin:"0 auto"}}>
+        <strong>Render error:</strong><br/><br/>
+        {this.state.err.message}<br/><br/>
+        <pre style={{fontSize:12,whiteSpace:"pre-wrap"}}>{this.state.err.stack?.slice(0,600)}</pre>
+      </div>
+    );
+    return this.props.children;
+  }
+}
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <ErrorBoundary><App /></ErrorBoundary>
+);
 window.addEventListener("load", () => { const l = document.getElementById("loading"); if (l) { l.style.opacity = 0; setTimeout(() => l.remove(), 500); } });
 setTimeout(() => { const l = document.getElementById("loading"); if (l) { l.style.opacity = 0; setTimeout(() => l.remove(), 500); } }, 1400);
