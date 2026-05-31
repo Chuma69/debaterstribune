@@ -9,10 +9,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 } /*EDITMODE-END*/;
 
 function parseRoute() {
-  // Strip the base path, then split into segments
-  const pathname = window.location.pathname;
-  const stripped = pathname.replace(BASE, '') || '/';
-  const parts = stripped.split("/").filter(Boolean);
+  const h = (window.location.hash || "#/").replace(/^#/, "");
+  const parts = h.split("/").filter(Boolean);
   if (parts.length === 0) return { name: "home" };
   if (parts[0] === "read") return { name: "article", slug: parts[1] };
   if (parts[0] === "section") return { name: "archive", section: parts[1] };
@@ -188,8 +186,8 @@ function App() {
 
   useE(() => {
     const on = () => setRoute(parseRoute());
-    window.addEventListener("popstate", on);
-    return () => window.removeEventListener("popstate", on);
+    window.addEventListener("hashchange", on);
+    return () => window.removeEventListener("hashchange", on);
   }, []);
 
   useE(() => {
