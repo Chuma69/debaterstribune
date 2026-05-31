@@ -35,7 +35,7 @@ function HomeHero() {
             </div>
             <div className="label" style={{ marginTop: 26 }}>By {au?.name} · {au?.region} · {a.date}</div>
           </div>
-          <Duotone hue={a.hue} ratio="4 / 5" cover={"images/cover-" + a.slug + ".jpg"} brief={a.img} />
+          <Duotone hue={a.hue} ratio="3 / 2" cover={"images/cover-" + a.slug + ".jpg"} brief={a.img} />
         </a>
       </div>
     </header>
@@ -88,7 +88,8 @@ function SectionNavigator() {
 }
 
 function EditorSpotlight() {
-  const a = articleBySlug("the-cost-of-debate");
+  // Use spotlight flag from Sanity settings if available, else fall back to hardcoded default
+  const a = ARTICLES.find(x => x.spotlight) || articleBySlug("the-cost-of-debate");
   const au = contributor(a.author);
   const sec = sectionById(a.section);
   return (

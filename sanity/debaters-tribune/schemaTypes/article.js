@@ -126,15 +126,7 @@ export default {
       validation: R => R.required(),
     },
 
-    // 11. Feature flag
-    {
-      name: 'feature',
-      title: 'Feature on home page?',
-      type: 'boolean',
-      initialValue: false,
-    },
-
-    // 12. Accent hue (design)
+    // 11. Accent hue (design)
     {
       name: 'hue',
       title: 'Accent hue (0–360)',

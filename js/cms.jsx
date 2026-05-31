@@ -1,6 +1,4 @@
 // cms.jsx — Sanity fetch layer
-// Replace SANITY_PROJECT_ID with your project ID from sanity.io/manage
-// Leave SANITY_CONFIGURED = false until you have a real project ID.
 
 const SANITY_CONFIGURED = true;
 const SANITY_PROJECT_ID  = '1eyxn40r';
@@ -9,11 +7,18 @@ const SANITY_API_VERSION = '2024-01-01';
 
 // ── GROQ queries ──────────────────────────────────────────────────────────────
 
+const SITE_SETTINGS_QUERY = `
+  *[_type == "siteSettings" && _id == "siteSettings"][0] {
+    "featuredSlug":  featuredArticle->slug.current,
+    "spotlightSlug": editorsSpotlight->slug.current
+  }
+`;
+
 const CONTRIBUTOR_QUERY = `
   *[_type == "contributor"] | order(name asc) {
     "id": slug.current,
     name, byline, region, bio,
-    circuit, formats, debaterType, sections,
+    circuit, formats, debaterType,
     "photo": photo.asset->url
   }
 `;
@@ -21,10 +26,10 @@ const CONTRIBUTOR_QUERY = `
 const ARTICLE_QUERY = `
   *[_type == "article"] | order(date desc) {
     "slug": slug.current,
-    title, dek, section, franchise,
+    title, dek, section,
     "author": author->slug.current,
     "date": date,
-    read, hue, feature,
+    read, hue,
     "img": coverImage.alt,
     "coverUrl": coverImage.asset->url,
     "audioUrl": audioFile.asset->url,
@@ -37,14 +42,13 @@ const ARTICLE_QUERY = `
 function ptToBlocks(body) {
   if (!body || !Array.isArray(body)) return [];
   const result = [];
-  let currentList = null; // tracks the active list block being built
+  let currentList = null;
 
   for (const node of body) {
     if (node._type !== 'block') continue;
     const text = (node.children || []).map(c => c.text || '').join('');
     if (!text.trim()) continue;
 
-    // Bullet list item
     if (node.listItem === 'bullet') {
       if (!currentList || currentList.t !== 'ul') {
         currentList = { t: 'ul', v: [] };
@@ -53,8 +57,6 @@ function ptToBlocks(body) {
       currentList.v.push(text);
       continue;
     }
-
-    // Numbered list item
     if (node.listItem === 'number') {
       if (!currentList || currentList.t !== 'ol') {
         currentList = { t: 'ol', v: [] };
@@ -64,7 +66,6 @@ function ptToBlocks(body) {
       continue;
     }
 
-    // Non-list block — close any open list
     currentList = null;
 
     if (node.style === 'h2')         { result.push({ t: 'h', v: text }); continue; }
@@ -96,37 +97,39 @@ async function sanityFetch(query) {
 }
 
 // ── Main loader ───────────────────────────────────────────────────────────────
-// Returns { articles, contributors } shaped exactly like the static data,
-// or null if Sanity is not configured yet.
 
 async function loadFromSanity() {
   if (!SANITY_CONFIGURED || SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') {
-    return null; // fall back to static data
+    return null;
   }
   try {
-    const [rawContributors, rawArticles] = await Promise.all([
+    const [settings, rawContributors, rawArticles] = await Promise.all([
+      sanityFetch(SITE_SETTINGS_QUERY),
       sanityFetch(CONTRIBUTOR_QUERY),
       sanityFetch(ARTICLE_QUERY),
     ]);
 
-    // Build contributors map  { id -> contributor }
+    // Build contributors map
     const contributors = {};
     for (const c of rawContributors) {
       contributors[c.id] = c;
     }
 
-    // Build articles array
+    // Mark featured + spotlight from settings (single source of truth)
+    const featuredSlug  = settings?.featuredSlug;
+    const spotlightSlug = settings?.spotlightSlug;
+
     const articles = rawArticles.map(a => ({
       ...a,
-      date:  fmtDate(a.date),
-      audio: a.audio || '10:00',
-      hue:   a.hue   || 280,
-      body:  ptToBlocks(a.body),
-      // use Sanity CDN image URL when available, fall back to local images/
+      date:     fmtDate(a.date),
+      hue:      a.hue || 280,
+      body:     ptToBlocks(a.body),
+      feature:  a.slug === featuredSlug,      // ← set by settings, not per-article toggle
+      spotlight: a.slug === spotlightSlug,    // ← new flag for editor's spotlight
       _coverUrl: a.coverUrl || null,
     }));
 
-    return { articles, contributors };
+    return { articles, contributors, featuredSlug, spotlightSlug };
   } catch (err) {
     console.warn('[Tribune] Sanity fetch failed, using static data.', err);
     return null;
