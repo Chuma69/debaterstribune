@@ -17,38 +17,67 @@ function shareArticle(article){
   const url = window.location.href.split("#")[0] + "#/read/" + article.slug;
   const toast = (msg) => window.dispatchEvent(new CustomEvent("show_toast", { detail: msg }));
 
-  // 1. Native share sheet (mobile / supported browsers)
+  // Mobile / browsers with native share
   if(navigator.share){
     navigator.share({ title: article.title, text: article.dek, url }).catch(()=>{});
     return;
   }
 
-  // 2. Synchronous execCommand — must run within the user gesture,
-  //    so we do it here directly, not inside a Promise callback
-  const el = document.createElement("textarea");
-  el.value = url;
-  el.setAttribute("readonly", "");
-  el.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
-  document.body.appendChild(el);
-  el.focus();
-  el.select();
-  el.setSelectionRange(0, url.length);
-  const ok = document.execCommand("copy");
-  document.body.removeChild(el);
-
-  if(ok){
-    toast("Link copied to clipboard");
+  // Desktop: use Clipboard API (works on HTTPS with a user gesture)
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url)
+      .then(()  => toast("Link copied to clipboard ✓"))
+      .catch(()  => showShareModal(url));
     return;
   }
 
-  // 3. Async clipboard API (HTTPS only) — last resort
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(url)
-      .then(() => toast("Link copied to clipboard"))
-      .catch(() => toast("Share this link: " + url));
-  } else {
-    toast("Share this link: " + url);
-  }
+  // No clipboard support at all
+  showShareModal(url);
+}
+
+function showShareModal(url){
+  // Show a small inline modal so the user can copy manually
+  const existing = document.getElementById("dt-share-modal");
+  if(existing) existing.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "dt-share-modal";
+  modal.style.cssText = [
+    "position:fixed","bottom:80px","left:50%","transform:translateX(-50%)",
+    "background:var(--ink)","color:var(--paper)","z-index:400",
+    "padding:20px 24px","border-radius:3px","min-width:min(480px,90vw)",
+    "box-shadow:0 8px 40px rgba(0,0,0,0.4)","display:flex","gap:12px","align-items:center"
+  ].join(";");
+
+  const input = document.createElement("input");
+  input.value = url;
+  input.readOnly = true;
+  input.style.cssText = [
+    "flex:1","background:rgba(244,242,248,0.1)","border:1px solid rgba(244,242,248,0.2)",
+    "color:var(--paper)","padding:10px 12px","border-radius:2px",
+    "font-family:var(--ff-mono)","font-size:11px","outline:none","min-width:0"
+  ].join(";");
+
+  const btn = document.createElement("button");
+  btn.textContent = "Copy";
+  btn.style.cssText = [
+    "background:var(--accent)","color:#fff","border:none","padding:10px 18px",
+    "border-radius:2px","font-family:var(--ff-sans)","font-weight:600",
+    "font-size:13px","cursor:pointer","flex-shrink:0"
+  ].join(";");
+  btn.onclick = () => { input.select(); document.execCommand("copy"); modal.remove();
+    window.dispatchEvent(new CustomEvent("show_toast", { detail:"Link copied ✓" })); };
+
+  const close = document.createElement("button");
+  close.textContent = "✕";
+  close.style.cssText = "background:none;border:none;color:rgba(244,242,248,0.5);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0";
+  close.onclick = () => modal.remove();
+
+  modal.append(input, btn, close);
+  document.body.appendChild(modal);
+  input.select();
+  // Auto-dismiss after 8 seconds
+  setTimeout(() => modal.remove(), 8000);
 }
 
 function Mark({ size=26, color="currentColor" }){
@@ -325,5 +354,5 @@ function Toast(){
 Object.assign(window, {
   go, Mark, Wordmark, useReveal, Duotone, RuleLabel, FranchiseTag,
   ArticleCard, Newsletter, SearchOverlay, Toast,
-  getBookmarks, toggleBookmark, isBookmarked, shareArticle
+  getBookmarks, toggleBookmark, isBookmarked, shareArticle, showShareModal
 });
