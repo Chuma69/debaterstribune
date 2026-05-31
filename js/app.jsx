@@ -182,13 +182,21 @@ function App() {
   const [cmsReady, setCmsReady] = useS(true); // render immediately with static data
   const [, forceUpdate] = useS(0); // used to re-render when late Babel scripts finish
 
-  // Poll until all late-loading page components are available, then re-render
+  // If any page component failed to load via Babel, fetch+compile+eval it directly
   useE(() => {
-    const pages = ['VolunteerPage','DonatePage','DispatchPage','ContributorsPage','BookmarksPage','LegalPage'];
-    const ready = () => pages.every(p => typeof window[p] !== 'undefined');
-    if(ready()) return;
-    const id = setInterval(() => { if(ready()){ clearInterval(id); forceUpdate(n => n+1); } }, 200);
-    return () => clearInterval(id);
+    const missing = [
+      ['VolunteerPage', 'js/pages-volunteer.jsx'],
+      ['DonatePage',    'js/pages-donate.jsx'],
+      ['DispatchPage',  'js/pages-dispatch.jsx'],
+    ].filter(([name]) => typeof window[name] === 'undefined');
+
+    if(missing.length === 0) return;
+
+    Promise.all(missing.map(([, src]) =>
+      fetch(src + '?v=25').then(r => r.text()).then(code => {
+        try { eval(Babel.transform(code, {presets:['react']}).code); } catch(e) { console.warn('Failed to load', src, e); }
+      })
+    )).then(() => forceUpdate(n => n + 1));
   }, []);
 
   // On mount: try to load live content from Sanity in the background.
