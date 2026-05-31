@@ -370,7 +370,7 @@ function Toast(){
 }
 
 Object.assign(window, {
-  go, Mark, Wordmark, useReveal, Duotone, RuleLabel, FranchiseTag,
+  BASE, go, Mark, Wordmark, useReveal, Duotone, RuleLabel, FranchiseTag,
   ArticleCard, Newsletter, SearchOverlay, Toast,
   getBookmarks, toggleBookmark, isBookmarked, shareArticle, showShareModal
 });
