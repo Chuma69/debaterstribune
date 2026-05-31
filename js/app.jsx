@@ -1,6 +1,89 @@
 // app.jsx — router, chrome, tweaks, mount
 const { useState: useS, useEffect: useE, useRef: useR } = React;
 
+const SITE      = "The Debaters' Tribune";
+const BASE_URL  = "https://chuma69.github.io/debaterstribune";
+const OG_DEFAULT = BASE_URL + "/images/og-image.png";
+
+function setTag(sel, attr, val) {
+  const el = document.querySelector(sel);
+  if (el) el.setAttribute(attr, val);
+}
+
+function setMeta({ title, description, image } = {}) {
+  const fullTitle = title ? title + " — " + SITE : SITE;
+  const desc      = description || "A living archive of debate culture.";
+  const img       = image || OG_DEFAULT;
+
+  document.title = fullTitle;
+  setTag('meta[name="description"]',          "content", desc);
+  setTag('meta[property="og:title"]',         "content", fullTitle);
+  setTag('meta[property="og:description"]',   "content", desc);
+  setTag('meta[property="og:image"]',         "content", img);
+  setTag('meta[name="twitter:title"]',        "content", fullTitle);
+  setTag('meta[name="twitter:description"]',  "content", desc);
+  setTag('meta[name="twitter:image"]',        "content", img);
+}
+
+function metaForRoute(route) {
+  switch(route.name) {
+    case "home":
+      return { title: null, description: "A living archive of debate culture — voices, memory, argument." };
+
+    case "article": {
+      const a  = articleBySlug(route.slug);
+      const au = a ? contributor(a.author) : null;
+      const coverImg = a ? BASE_URL + "/images/cover-" + a.slug + ".jpg" : null;
+      return a ? {
+        title:       a.title,
+        description: a.dek + (au ? " By " + au.name + "." : ""),
+        image:       a._coverUrl || coverImg,
+      } : {};
+    }
+
+    case "archive": {
+      const sec = sectionById(route.section);
+      return sec
+        ? { title: sec.name, description: sec.blurb }
+        : { title: "All Stories", description: "Every essay, history and reflection published in the Tribune." };
+    }
+
+    case "profile": {
+      const c = contributor(route.id);
+      return c ? { title: c.name, description: c.bio } : {};
+    }
+
+    case "contributors":
+      return { title: "Contributors", description: "Debaters, coaches and adjudicators from circuits around the world — writing in the first person about what the activity did to them." };
+
+    case "pitch":
+      return { title: "Pitch a story", description: "You don't need to be a writer. You need a real moment and the willingness to be honest about it." };
+
+    case "about":
+      return { title: "About", description: "Debate teaches people how to speak. Almost nothing lets debaters tell their story. The Debaters' Tribune exists to catch those stories." };
+
+    case "bookmarks":
+      return { title: "Saved stories", description: "Stories you've saved while reading." };
+
+    case "volunteer":
+      return { title: "Volunteer", description: "The archive runs on people who care about the record. Join us as an editor, researcher, translator, or outreach connector." };
+
+    case "donate":
+      return { title: "Support the Tribune", description: "Good writing from the debate world costs money to produce. We don't carry advertising. The archive stays free because readers choose to support it." };
+
+    case "dispatch":
+      return { title: "The Dispatch", description: "One or two stories a month. Nothing you didn't ask for." };
+
+    case "legal": {
+      const titles = { terms: "Terms of Use", privacy: "Privacy Policy", editorial: "Editorial Policy" };
+      return { title: titles[route.doc] || "Legal" };
+    }
+
+    default:
+      return {};
+  }
+}
+
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "frontTheme": "light",
   "accent": "#7A37CF",
@@ -182,10 +265,13 @@ function App() {
   }, []);
 
   useE(() => {
-    const on = () => setRoute(parseRoute());
+    const on = () => { const r = parseRoute(); setRoute(r); setMeta(metaForRoute(r)); };
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
+
+  // Set meta on initial load
+  useE(() => { setMeta(metaForRoute(route)); }, []);
 
   useE(() => {
     const onKey = (e) => {
