@@ -8,16 +8,16 @@ const FORMAT_NAMES  = { draft:"I have a draft", voice:"A voice note", interview:
 
 async function submitToNotion(f) {
   const payload = {
-    name:      f.name,
-    email:     f.email,
-    role:      f.role,
-    region:    f.region || "",
-    title:     f.title,
-    section:   SECTION_NAMES[f.section] || f.section,
-    format:    FORMAT_NAMES[f.format]   || f.format,
-    summary:   f.summary,
-    draftLink: f.draftLink || "",
-    support:   f.support,
+    name:      f.name.trim()  || "Anonymous",
+    email:     f.email.trim() || "",
+    role:      f.role         || "",
+    region:    f.region       || "",
+    title:     f.title.trim() || "(no title)",
+    section:   SECTION_NAMES[f.section] || f.section || "",
+    format:    FORMAT_NAMES[f.format]   || f.format  || "",
+    summary:   f.summary      || "",
+    draftLink: f.draftLink    || "",
+    support:   !!f.support,
     submitted: new Date().toISOString().slice(0, 10),
   };
 
