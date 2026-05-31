@@ -15,39 +15,40 @@ function toggleBookmark(slug){
 function isBookmarked(slug){ return getBookmarks().includes(slug); }
 function shareArticle(article){
   const url = window.location.href.split("#")[0] + "#/read/" + article.slug;
-
   const toast = (msg) => window.dispatchEvent(new CustomEvent("show_toast", { detail: msg }));
 
-  // Fallback: legacy execCommand copy via a temp textarea
-  const execCopy = () => {
-    const el = document.createElement("textarea");
-    el.value = url;
-    el.style.cssText = "position:fixed;opacity:0;top:0;left:0";
-    document.body.appendChild(el);
-    el.focus(); el.select();
-    try {
-      document.execCommand("copy");
-      toast("Link copied to clipboard");
-    } catch(e) {
-      toast("Copy this link: " + url);
-    }
-    document.body.removeChild(el);
-  };
-
-  // 1. Native share sheet (mobile)
+  // 1. Native share sheet (mobile / supported browsers)
   if(navigator.share){
     navigator.share({ title: article.title, text: article.dek, url }).catch(()=>{});
     return;
   }
-  // 2. Modern clipboard API
-  if(navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(url)
-      .then(() => toast("Link copied to clipboard"))
-      .catch(() => execCopy());
+
+  // 2. Synchronous execCommand — must run within the user gesture,
+  //    so we do it here directly, not inside a Promise callback
+  const el = document.createElement("textarea");
+  el.value = url;
+  el.setAttribute("readonly", "");
+  el.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  el.setSelectionRange(0, url.length);
+  const ok = document.execCommand("copy");
+  document.body.removeChild(el);
+
+  if(ok){
+    toast("Link copied to clipboard");
     return;
   }
-  // 3. Legacy execCommand fallback
-  execCopy();
+
+  // 3. Async clipboard API (HTTPS only) — last resort
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url)
+      .then(() => toast("Link copied to clipboard"))
+      .catch(() => toast("Share this link: " + url));
+  } else {
+    toast("Share this link: " + url);
+  }
 }
 
 function Mark({ size=26, color="currentColor" }){
