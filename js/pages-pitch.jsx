@@ -1,51 +1,32 @@
 // pages-pitch.jsx
 const { useState:useSP, useEffect:useEP } = React;
 
-// Token split to avoid secret scanning — assembled at runtime
-const NOTION_TOKEN = ["ntn_647163068", "19a6xnuVaRV", "LjE5T7jX4Pxk2N6oxZ7qfG58zg"].join("");
-const NOTION_DB_ID = "371f116479838074b029e35649548a3c";
+const MAKE_WEBHOOK = "https://hook.eu1.make.com/spysp9ciyflzbxmfa6l1osacr1b14sgo";
+
+const SECTION_NAMES = { essays:"Essays", histories:"Histories", beyond:"Beyond" };
+const FORMAT_NAMES  = { draft:"I have a draft", voice:"A voice note", interview:"Interview me", idea:"Just an idea" };
 
 async function submitToNotion(f) {
-  const SECTION_NAMES = { essays:"Essays", histories:"Histories", beyond:"Beyond" };
-  const FORMAT_NAMES  = { draft:"I have a draft", voice:"A voice note", interview:"Interview me", idea:"Just an idea" };
-
-
-  const body = {
-    parent: { database_id: NOTION_DB_ID },
-    properties: {
-      "Name":                 { title:     [{ text: { content: f.name } }] },
-      "Email":                { email:     f.email },
-      "Profile":              { select:    { name: f.role } },
-      "Circuit":              { rich_text: [{ text: { content: f.region || "" } }] },
-      "Title":                { rich_text: [{ text: { content: f.title } }] },
-      "Section":              { select:    { name: SECTION_NAMES[f.section] || f.section } },
-      "Format":               { select:    { name: FORMAT_NAMES[f.format] || f.format } },
-      "Story":                { rich_text: [{ text: { content: f.summary } }] },
-      "Draft link":           { url: f.draftLink || null },
-      "Need Editor support?": { checkbox:  f.support },
-      "Submitted":            { date:      { start: new Date().toISOString().slice(0,10) } },
-      "Status":               { select:    { name: "New" } },
-    },
-    // If they pasted a link, add it as a bookmark block on the page
-    children: f.draftLink ? [
-      { object:"block", type:"bookmark", bookmark:{ url: f.draftLink, caption:[] } }
-    ] : [],
+  const payload = {
+    name:      f.name,
+    email:     f.email,
+    role:      f.role,
+    region:    f.region || "",
+    title:     f.title,
+    section:   SECTION_NAMES[f.section] || f.section,
+    format:    FORMAT_NAMES[f.format]   || f.format,
+    summary:   f.summary,
+    draftLink: f.draftLink || "",
+    support:   f.support,
+    submitted: new Date().toISOString().slice(0, 10),
   };
 
-  const res = await fetch("https://api.notion.com/v1/pages", {
+  const res = await fetch(MAKE_WEBHOOK, {
     method: "POST",
-    headers: {
-      "Authorization": "Bearer " + NOTION_TOKEN,
-      "Notion-Version": "2022-06-28",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Notion error");
-  }
-  return res.json();
+  if (!res.ok) throw new Error("Webhook error " + res.status);
 }
 
 const ROLES = ["Current debater","Alumni / oldie","Coach","Adjudicator","Debate union / org"];
