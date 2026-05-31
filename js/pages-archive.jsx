@@ -99,16 +99,9 @@ function ArchivePage({ section }){
               className="btn btn-ghost" style={{marginTop:20}}>Clear filters</button>
           </div>
         ) : (
-          <>
-            {filtered[0] && (
-              <div style={{marginBottom:"clamp(40px,5vw,64px)"}}>
-                <ArticleCard slug={filtered[0].slug} variant="wide"/>
-              </div>
-            )}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",columnGap:"clamp(40px,6vw,96px)"}}>
-              {filtered.slice(1).map(a=><ArticleCard key={a.slug} slug={a.slug} variant="text"/>)}
-            </div>
-          </>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"clamp(24px,3vw,48px)"}}>
+            {filtered.map(a=><ArticleCard key={a.slug} slug={a.slug} variant="standard"/>)}
+          </div>
         )}
       </div>
 
