@@ -167,13 +167,13 @@ function App() {
   // If not configured (or fetch fails), falls back to the static data already in window.*
   useE(() => {
     loadFromSanity().then(data => {
-      if (data) {
-        // Overwrite the static globals with live Sanity content
-        Object.assign(window, {
-          ARTICLES: data.articles,
-          CONTRIBUTORS: data.contributors,
-        });
-      }
+      // Only swap in Sanity data if there's actually content published.
+      // If the Studio is empty, keep the static placeholders so the site
+      // always has something to show.
+      const hasArticles      = data?.articles?.length > 0;
+      const hasContributors  = data && Object.keys(data.contributors).length > 0;
+      if (hasArticles)     window.ARTICLES      = data.articles;
+      if (hasContributors) window.CONTRIBUTORS  = data.contributors;
       setCmsReady(true);
     });
   }, []);
