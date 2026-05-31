@@ -20,13 +20,11 @@ function ContributorsPage(){
   },[circuit,q]);
 
   const Chip = ({active,onClick,children}) => (
-    <button onClick={onClick} className="mono" style={{
-      fontSize:11.5,letterSpacing:"0.08em",textTransform:"uppercase",
-      padding:"9px 14px",borderRadius:2,
-      border:"1px solid "+(active?"var(--accent)":"var(--hair)"),
-      background:active?"var(--accent)":"transparent",
-      color:active?"#fff":"var(--fg-muted)",transition:"all .2s"
-    }}>{children}</button>
+    <button onClick={onClick}
+      className={"mono chip " + (active ? "chip-active" : "chip-idle")}
+      style={{fontSize:11.5,letterSpacing:"0.08em",textTransform:"uppercase",
+        padding:"9px 14px",borderRadius:2,border:"1px solid"}}
+    >{children}</button>
   );
 
   return (

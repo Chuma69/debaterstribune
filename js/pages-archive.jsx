@@ -29,14 +29,10 @@ function ArchivePage({ section }){
     const active = activeSection === id;
     return (
       <button onClick={()=>{ setActiveSection(id); go("/section/"+id); }}
-        className="mono" style={{
-          fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",
-          padding:"9px 16px",borderRadius:2,
-          border:"1px solid "+(active?"var(--accent)":"var(--hair)"),
-          background:active?"var(--accent)":"transparent",
-          color:active?"#fff":"var(--fg-muted)",
-          transition:"all .2s"
-        }}>{label}</button>
+        className={"mono chip " + (active ? "chip-active" : "chip-idle")}
+        style={{fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",
+          padding:"9px 16px",borderRadius:2,border:"1px solid"}}
+      >{label}</button>
     );
   };
 

@@ -133,10 +133,15 @@ html.do-reveal .fadeup.in{opacity:1;transform:none;}
   letter-spacing:0.04em;padding:13px 22px;border-radius:2px;
   transition:transform .2s, background .2s, color .2s;
 }
-.btn-solid{background:var(--accent);color:#fff;}
-.btn-solid:hover{transform:translateY(-2px);background:var(--violet-soft);}
-.btn-ghost{border:1px solid var(--hair);color:var(--fg);}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-solid{background:var(--accent);color:#fff;border:1px solid var(--accent);}
+.btn-solid:hover{background:#fff;color:var(--accent);border-color:var(--accent);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--fg);border:1px solid var(--hair);}
+.btn-ghost:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* dark surface overrides — ghost on dark bg flips to white fill */
+.surface-dark .btn-ghost{border-color:rgba(244,242,248,0.35);color:var(--paper);}
+.surface-dark .btn-ghost:hover{background:var(--paper);color:var(--ink);border-color:var(--paper);}
+.surface-dark .btn-solid:hover{background:var(--paper);color:var(--accent);border-color:var(--paper);}
 
 input,textarea,select{font-family:var(--ff-sans);font-size:15px;color:var(--fg);}
 
@@ -195,6 +200,21 @@ body.type-grand h2{letter-spacing:-0.03em !important;}
 .search-result-item:hover{background:var(--paper-2);}
 .search-result-item:last-child{border-bottom:none;}
 .search-empty{padding:32px 24px;text-align:center;color:var(--fg-muted);font-family:var(--ff-body);font-style:italic;}
+
+/* filter chips (archive + contributors) */
+.chip{transition:background .18s,color .18s,border-color .18s;}
+.chip-active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.chip-idle{background:transparent;color:var(--fg-muted);border-color:var(--hair);}
+.chip-idle:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* audio play button */
+.play-btn{transition:background .18s,transform .18s;}
+.play-btn:hover{background:var(--ink) !important;transform:scale(1.07);}
+
+/* action buttons (save / share) */
+.action-btn{transition:background .18s,color .18s,border-color .18s;}
+.action-btn:hover{background:var(--accent) !important;color:#fff !important;border-color:var(--accent) !important;}
+.action-btn.saved:hover{background:transparent !important;color:var(--fg-muted) !important;border-color:var(--hair) !important;}
 
 /* bookmark button */
 .bookmark-btn{

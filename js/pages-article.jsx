@@ -76,6 +76,7 @@ function AudioPlayer({ article, author }){
       {hasFile && <audio ref={audioRef} src={article.audioUrl} preload="metadata" style={{display:"none"}}/>}
 
       <button onClick={togglePlay} aria-label={playing?"Pause":"Play"}
+        className="play-btn"
         style={{flex:"0 0 auto",width:46,height:46,borderRadius:"50%",
           background:"var(--accent)",color:"#fff",display:"grid",placeItems:"center"}}>
         {playing
@@ -157,22 +158,23 @@ function ArticleActions({ article }){
   };
   return (
     <div style={{display:"flex",gap:10,flexWrap:"wrap",marginTop:28}}>
-      <button onClick={handleBookmark} className={"bookmark-btn"+(saved?" saved":"")}
+      <button onClick={handleBookmark}
+        className={"action-btn"+(saved?" saved":"")}
         style={{display:"inline-flex",alignItems:"center",gap:8,
           fontFamily:"var(--ff-mono)",fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",
-          padding:"10px 16px",border:"1px solid var(--hair)",borderRadius:2,
-          transition:"all .2s",color:saved?"var(--accent)":"var(--fg-muted)",
-          borderColor:saved?"var(--accent)":"var(--hair)"}}>
+          padding:"10px 16px",border:"1px solid "+(saved?"var(--accent)":"var(--hair)"),borderRadius:2,
+          color:saved?"var(--accent)":"var(--fg-muted)"}}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill={saved?"var(--accent)":"none"} stroke="currentColor" strokeWidth="2">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
         {saved ? "Saved" : "Save"}
       </button>
       <button onClick={()=>shareArticle(article)}
+        className="action-btn"
         style={{display:"inline-flex",alignItems:"center",gap:8,
           fontFamily:"var(--ff-mono)",fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",
           padding:"10px 16px",border:"1px solid var(--hair)",borderRadius:2,
-          transition:"all .2s",color:"var(--fg-muted)"}}>
+          color:"var(--fg-muted)"}}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
         </svg>
