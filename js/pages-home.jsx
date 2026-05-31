@@ -106,7 +106,7 @@ function EditorSpotlight() {
               fontSize: "clamp(19px,1.9vw,25px)", lineHeight: 1.45,
               color: "rgba(244,242,248,0.72)", marginTop: 22, maxWidth: "44ch" }}>{a.dek}</p>
             <div style={{ display: "flex", alignItems: "center", gap: 18, marginTop: 28 }}>
-              <span className="btn btn-solid">Read the essay</span>
+              <span className="btn btn-solid">Read the story</span>
               <span className="label" style={{ color: "rgba(244,242,248,0.6)" }}>{sec?.name} · {au?.name}</span>
             </div>
           </div>
