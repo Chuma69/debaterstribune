@@ -52,11 +52,7 @@ function LatestGrid() {
           className="label" style={{ color: "var(--accent)" }}>All stories →</a>
       } />
       <hr className="hairline" style={{ margin: "16px 0 40px" }} />
-      <div className="fadeup" style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
-        gap: "clamp(24px,3vw,48px)"
-      }}>
+      <div className="fadeup" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "clamp(24px,3vw,48px)" }}>
         {items.map((a) => <ArticleCard key={a.slug} slug={a.slug} variant="standard" />)}
       </div>
     </section>
