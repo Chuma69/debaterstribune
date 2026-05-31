@@ -32,6 +32,7 @@ const ARTICLE_QUERY = `
     read, hue,
     "img": coverImage.alt,
     "coverUrl": coverImage.asset->url,
+    "coverHotspot": coverImage.hotspot,
     "audioUrl": audioFile.asset->url,
     body
   }
@@ -126,7 +127,8 @@ async function loadFromSanity() {
       body:     ptToBlocks(a.body),
       feature:  a.slug === featuredSlug,      // ← set by settings, not per-article toggle
       spotlight: a.slug === spotlightSlug,    // ← new flag for editor's spotlight
-      _coverUrl: a.coverUrl || null,
+      _coverUrl:    a.coverUrl    || null,
+      _coverHotspot: a.coverHotspot || null, // {x, y} in 0-1 range
     }));
 
     return { articles, contributors, featuredSlug, spotlightSlug };

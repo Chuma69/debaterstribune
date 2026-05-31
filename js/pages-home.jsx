@@ -35,7 +35,7 @@ function HomeHero() {
             </div>
             <div className="label" style={{ marginTop: 26 }}>By {au?.name} · {au?.region} · {a.date}</div>
           </div>
-          <Duotone hue={a.hue} ratio="3 / 2" cover={"images/cover-" + a.slug + ".jpg"} brief={a.img} />
+          <Duotone hue={a.hue} ratio="3 / 2" cover={a._coverUrl||"images/cover-"+a.slug+".jpg"} hotspot={a._coverHotspot} brief={a.img} />
         </a>
       </div>
     </header>
@@ -110,7 +110,7 @@ function EditorSpotlight() {
               <span className="label" style={{ color: "rgba(244,242,248,0.6)" }}>{sec?.name} · {au?.name}</span>
             </div>
           </div>
-          <Duotone hue={a.hue} ratio="4 / 5" cover={"images/cover-" + a.slug + ".jpg"} brief={a.img} />
+          <Duotone hue={a.hue} ratio="4 / 5" cover={a._coverUrl||"images/cover-"+a.slug+".jpg"} hotspot={a._coverHotspot} brief={a.img} />
         </a>
       </div>
     </section>

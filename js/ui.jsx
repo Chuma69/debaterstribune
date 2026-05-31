@@ -140,12 +140,17 @@ function CameraIcon({ size=20 }){
   );
 }
 
-function Duotone({ brief, cover, credit="Photo: DebaterVerse", ratio="4 / 5", hue=280, mark=true, compact=false, style }){
+function Duotone({ brief, cover, hotspot, credit="Photo: DebaterVerse", ratio="4 / 5", hue=280, mark=true, compact=false, style }){
+  // hotspot = { x: 0–1, y: 0–1 } from Sanity — translates to CSS object-position
+  // so the focal point stays in frame regardless of the crop ratio
+  const objPos = hotspot
+    ? `${(hotspot.x * 100).toFixed(1)}% ${(hotspot.y * 100).toFixed(1)}%`
+    : "center";
   return (
     <div className="duotone" style={{aspectRatio:ratio, "--accent":`oklch(0.52 0.19 ${hue})`, ...style}}>
       {cover ? (<>
         <img src={cover} alt={brief||"Cover photograph"} loading="lazy"
-          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:objPos}}/>
         {credit && <span className="duotone-credit">{credit}</span>}
       </>) : compact ? (
         <div className="duotone-brief"><CameraIcon size={22}/></div>
@@ -212,13 +217,13 @@ function ArticleCard({ slug, variant="standard" }){
           <p style={{fontFamily:"var(--ff-body)",fontSize:18,lineHeight:1.5,color:"var(--fg-muted)",marginTop:14,maxWidth:"42ch"}}>{a.dek}</p>
           <Meta/>
         </div>
-        <Duotone hue={a.hue} ratio="5 / 4" cover={"images/cover-"+a.slug+".jpg"} brief={a.img} />
+        <Duotone hue={a.hue} ratio="5 / 4" cover={a._coverUrl||"images/cover-"+a.slug+".jpg"} hotspot={a._coverHotspot} brief={a.img} />
       </a>
     );
   }
   return (
     <a href={"#/read/"+a.slug} onClick={open} className="card-hover" style={{display:"block"}}>
-      <Duotone hue={a.hue} ratio="4 / 3" cover={"images/cover-"+a.slug+".jpg"} brief={a.img} />
+      <Duotone hue={a.hue} ratio="4 / 3" cover={a._coverUrl||"images/cover-"+a.slug+".jpg"} hotspot={a._coverHotspot} brief={a.img} />
       <div style={{marginTop:16}}>
         {a.franchise && <div style={{marginBottom:8}}><FranchiseTag id={a.franchise}/></div>}
         <h3 style={{fontFamily:"var(--ff-display)",fontWeight:700,fontSize:"clamp(19px,1.9vw,23px)",lineHeight:1.1,letterSpacing:"-0.01em"}}>{a.title}</h3>

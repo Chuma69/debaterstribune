@@ -217,7 +217,7 @@ function ArticlePage({ slug }){
       </div>
 
       <div className="wrap" style={{maxWidth:1080,marginTop:"clamp(28px,4vw,44px)"}}>
-        <Duotone hue={a.hue} ratio="16 / 9" cover={"images/cover-"+a.slug+".jpg"} brief={a.img}/>
+        <Duotone hue={a.hue} ratio="16 / 9" cover={a._coverUrl||"images/cover-"+a.slug+".jpg"} hotspot={a._coverHotspot} brief={a.img}/>
       </div>
 
       <div className="wrap" style={{maxWidth:680,marginTop:"clamp(34px,4vw,52px)"}}>
