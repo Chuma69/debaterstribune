@@ -8,6 +8,12 @@ const NOTION_DB_ID = "371f116479838074b029e35649548a3c";
 async function submitToNotion(f) {
   const SECTION_NAMES = { essays:"Essays", histories:"Histories", beyond:"Beyond" };
   const FORMAT_NAMES  = { draft:"I have a draft", voice:"A voice note", interview:"Interview me", idea:"Just an idea" };
+
+  // Build draft note for the summary field
+  let draftNote = "";
+  if (f.draftLink) draftNote = "\n\nDraft link: " + f.draftLink;
+  if (f.draftFile) draftNote += "\n\nDraft file attached: " + f.draftFile.name + " (" + (f.draftFile.size/1024).toFixed(0) + " KB) — request from contributor via email.";
+
   const body = {
     parent: { database_id: NOTION_DB_ID },
     properties: {
@@ -18,12 +24,17 @@ async function submitToNotion(f) {
       "Title":          { rich_text:  [{ text: { content: f.title } }] },
       "Section":        { select:     { name: SECTION_NAMES[f.section] || f.section } },
       "Format":         { select:     { name: FORMAT_NAMES[f.format] || f.format } },
-      "Summary":        { rich_text:  [{ text: { content: f.summary } }] },
+      "Summary":        { rich_text:  [{ text: { content: f.summary + draftNote } }] },
       "Editor support": { checkbox:   f.support },
       "Submitted":      { date:       { start: new Date().toISOString().slice(0,10) } },
       "Status":         { select:     { name: "New" } },
-    }
+    },
+    // If they pasted a link, add it as a bookmark block on the page
+    children: f.draftLink ? [
+      { object:"block", type:"bookmark", bookmark:{ url: f.draftLink, caption:[] } }
+    ] : [],
   };
+
   const res = await fetch("https://api.notion.com/v1/pages", {
     method: "POST",
     headers: {
@@ -65,7 +76,7 @@ function PitchPage(){
   const [step,setStep] = useSP(0);
   const [done,setDone] = useSP(false);
   const [errs,setErrs] = useSP({});
-  const [f,setF] = useSP({ role:"", name:"", email:"", region:"", title:"", section:"", franchise:"", summary:"", format:"", support:false });
+  const [f,setF] = useSP({ role:"", name:"", email:"", region:"", title:"", section:"", franchise:"", summary:"", format:"", support:false, draftFile:null, draftLink:"" });
   const set = (k,v)=>{ setF(p=>({...p,[k]:v})); setErrs(p=>({...p,[k]:null})); };
   useEP(()=>{ window.scrollTo(0,0); },[step,done]);
 
@@ -108,7 +119,7 @@ function PitchPage(){
         </p>
         <div style={{display:"flex",gap:14,marginTop:36,flexWrap:"wrap"}}>
           <button onClick={()=>go("/")} className="btn btn-solid">Back to the front page</button>
-          <button onClick={()=>{setDone(false);setStep(0);setF({role:"",name:"",email:"",region:"",title:"",section:"",franchise:"",summary:"",format:"",support:false});}} className="btn btn-ghost">Pitch another</button>
+          <button onClick={()=>{setDone(false);setStep(0);setF({role:"",name:"",email:"",region:"",title:"",section:"",franchise:"",summary:"",format:"",support:false,draftFile:null,draftLink:""});}} className="btn btn-ghost">Pitch another</button>
         </div>
       </div>
     );
@@ -190,6 +201,52 @@ function PitchPage(){
                 ))}
               </div>
             </Field>
+            {/* Draft upload — only shown when "I have a draft" is selected */}
+            {f.format === "draft" && (
+              <div style={{marginTop:20,padding:"20px 24px",border:"1px solid var(--hair)",borderRadius:3,
+                background:"color-mix(in oklab,var(--bg),var(--accent) 3%)"}}>
+                <div className="label" style={{color:"var(--fg)",marginBottom:14}}>Upload your draft</div>
+
+                {/* File upload */}
+                <label style={{display:"block",marginBottom:14,cursor:"pointer"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",
+                    border:"1px dashed var(--hair)",borderRadius:2,
+                    background:f.draftFile?"color-mix(in oklab,var(--bg),var(--accent) 6%)":"transparent",
+                    transition:"background .2s"}}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span style={{fontFamily:"var(--ff-body)",fontSize:16,color:f.draftFile?"var(--fg)":"var(--fg-muted)"}}>
+                      {f.draftFile ? f.draftFile.name : "Choose a file — .doc, .docx, .pdf, .txt, .md"}
+                    </span>
+                    {f.draftFile && (
+                      <span className="mono" style={{fontSize:10,color:"var(--fg-muted)",marginLeft:"auto"}}>
+                        {(f.draftFile.size/1024).toFixed(0)} KB
+                      </span>
+                    )}
+                  </div>
+                  <input type="file" accept=".doc,.docx,.pdf,.txt,.md,.rtf"
+                    style={{display:"none"}}
+                    onChange={e=>{ const file=e.target.files[0]; if(file) set("draftFile",file); }}/>
+                </label>
+
+                {/* OR a link */}
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+                  <hr style={{flex:1,border:0,borderTop:"1px solid var(--hair)"}}/>
+                  <span className="mono" style={{fontSize:10,color:"var(--fg-muted)"}}>OR PASTE A LINK</span>
+                  <hr style={{flex:1,border:0,borderTop:"1px solid var(--hair)"}}/>
+                </div>
+                <input style={inputStyle} value={f.draftLink}
+                  onChange={e=>set("draftLink",e.target.value)}
+                  placeholder="Google Docs, Dropbox, Notion, etc."/>
+
+                <p style={{fontFamily:"var(--ff-body)",fontSize:14,color:"var(--fg-muted)",marginTop:12,lineHeight:1.5}}>
+                  Your draft stays private. Only the editors working on your piece will see it.
+                </p>
+              </div>
+            )}
+
             <label style={{display:"flex",gap:12,alignItems:"flex-start",cursor:"pointer",marginTop:14,padding:"16px 0",borderTop:"1px solid var(--hair)"}}>
               <input type="checkbox" checked={f.support} onChange={e=>set("support",e.target.checked)} style={{marginTop:4,width:18,height:18,accentColor:"var(--accent)"}}/>
               <span style={{fontFamily:"var(--ff-body)",fontSize:16.5,lineHeight:1.45}}>
@@ -209,6 +266,8 @@ function PitchPage(){
               ["Title", f.title],
               ["Section", sectionById(f.section)?.name],
               ["Format", FORMATS.find(x=>x.id===f.format)?.t + (f.support?" · with editor support":"")],
+              ...(f.draftFile ? [["Draft", f.draftFile.name + " (" + (f.draftFile.size/1024).toFixed(0) + " KB)"]] : []),
+              ...(f.draftLink ? [["Draft link", f.draftLink]] : []),
             ].map(([k,v])=>(
               <div key={k} style={{display:"grid",gridTemplateColumns:"160px 1fr",gap:16,padding:"14px 0",borderTop:"1px solid var(--hair)"}}>
                 <span className="label">{k}</span>
