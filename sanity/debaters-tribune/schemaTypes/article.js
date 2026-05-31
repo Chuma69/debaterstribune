@@ -3,21 +3,13 @@ export default {
   name: 'article',
   title: 'Article',
   type: 'document',
-  groups: [
-    { name: 'classification', title: 'Classification', default: true },
-    { name: 'content',        title: 'Content' },
-    { name: 'publishing',     title: 'Publishing' },
-    { name: 'media',          title: 'Media' },
-  ],
   fields: [
 
-    // ── Classification ────────────────────────────────────────────────────────
+    // 1. Type of piece
     {
       name: 'section',
       title: 'Type of piece',
-      description: 'Which section of the Tribune this belongs to.',
       type: 'string',
-      group: 'classification',
       options: {
         list: [
           { title: '01 — Essay  (personal reflection, first-person)', value: 'essays' },
@@ -29,28 +21,39 @@ export default {
       validation: R => R.required(),
     },
 
-    // ── Content ───────────────────────────────────────────────────────────────
+    // 2. Title
     {
       name: 'title',
       title: 'Title',
       type: 'string',
-      group: 'content',
       validation: R => R.required(),
     },
+
+    // 3. Slug
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: { source: 'title', maxLength: 96 },
+      description: 'Auto-generated from the title. Used in the article URL.',
+      validation: R => R.required(),
+    },
+
+    // 4. Subtitle
     {
       name: 'dek',
       title: 'Subtitle',
       description: 'One sentence that hooks the reader — shown under the title everywhere.',
       type: 'text',
       rows: 2,
-      group: 'content',
       validation: R => R.required().max(200),
     },
+
+    // 5. Body
     {
       name: 'body',
       title: 'Body',
       type: 'array',
-      group: 'content',
       of: [
         {
           type: 'block',
@@ -68,61 +71,38 @@ export default {
         },
       ],
     },
+
+    // 6. Read time
+    {
+      name: 'read',
+      title: 'Read time (minutes)',
+      type: 'number',
+      validation: R => R.required().min(1).max(60),
+    },
+
+    // 7. Audio file — duration is read automatically from the file by the player
     {
       name: 'audioFile',
       title: 'Audio file',
-      description: 'Upload an MP3 or M4A recording of the story being read aloud.',
+      description: 'Upload an MP3 or M4A. Duration is detected automatically — no need to enter it manually.',
       type: 'file',
-      group: 'content',
       options: { accept: 'audio/*' },
     },
 
-    // ── Publishing ────────────────────────────────────────────────────────────
-    {
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      group: 'publishing',
-      options: { source: 'title', maxLength: 96 },
-      validation: R => R.required(),
-    },
+    // 8. Author
     {
       name: 'author',
       title: 'Author',
       type: 'reference',
       to: [{ type: 'contributor' }],
-      group: 'publishing',
       validation: R => R.required(),
-    },
-    {
-      name: 'date',
-      title: 'Publication date',
-      type: 'date',
-      group: 'publishing',
-      options: { dateFormat: 'MMMM D, YYYY' },
-      validation: R => R.required(),
-    },
-    {
-      name: 'read',
-      title: 'Read time (minutes)',
-      type: 'number',
-      group: 'publishing',
-      validation: R => R.required().min(1).max(60),
-    },
-    {
-      name: 'feature',
-      title: 'Feature on home page?',
-      type: 'boolean',
-      group: 'publishing',
-      initialValue: false,
     },
 
-    // ── Media ─────────────────────────────────────────────────────────────────
+    // 9. Cover image
     {
       name: 'coverImage',
       title: 'Cover image',
       type: 'image',
-      group: 'media',
       options: { hotspot: true },
       fields: [
         {
@@ -132,19 +112,30 @@ export default {
         },
       ],
     },
+
+    // 10. Publication date
     {
-      name: 'audio',
-      title: 'Audio duration (MM:SS)',
-      description: 'e.g. 14:22 — displayed in the player. Leave blank if unknown.',
-      type: 'string',
-      group: 'media',
+      name: 'date',
+      title: 'Publication date',
+      type: 'date',
+      options: { dateFormat: 'MMMM D, YYYY' },
+      validation: R => R.required(),
     },
+
+    // 11. Feature flag
+    {
+      name: 'feature',
+      title: 'Feature on home page?',
+      type: 'boolean',
+      initialValue: false,
+    },
+
+    // 12. Accent hue (design)
     {
       name: 'hue',
       title: 'Accent hue (0–360)',
       description: 'Controls the duotone colour of the cover image. 280 = violet.',
       type: 'number',
-      group: 'media',
       initialValue: 280,
       validation: R => R.min(0).max(360),
     },

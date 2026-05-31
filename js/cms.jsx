@@ -24,7 +24,7 @@ const ARTICLE_QUERY = `
     title, dek, section, franchise,
     "author": author->slug.current,
     "date": date,
-    read, audio, circuit, hue, feature, tags,
+    read, hue, feature,
     "img": coverImage.alt,
     "coverUrl": coverImage.asset->url,
     "audioUrl": audioFile.asset->url,
