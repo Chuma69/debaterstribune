@@ -103,12 +103,19 @@ async function loadFromSanity() {
   if (!SANITY_CONFIGURED || SANITY_PROJECT_ID === 'YOUR_PROJECT_ID') {
     return null;
   }
+  // Race against a 4-second timeout — static placeholders show immediately if Sanity is slow
+  const timeout = new Promise(resolve => setTimeout(() => resolve(null), 4000));
   try {
-    const [settings, rawContributors, rawArticles] = await Promise.all([
-      sanityFetch(SITE_SETTINGS_QUERY),
-      sanityFetch(CONTRIBUTOR_QUERY),
-      sanityFetch(ARTICLE_QUERY),
+    const result = await Promise.race([
+      Promise.all([
+        sanityFetch(SITE_SETTINGS_QUERY),
+        sanityFetch(CONTRIBUTOR_QUERY),
+        sanityFetch(ARTICLE_QUERY),
+      ]),
+      timeout,
     ]);
+    if (!result) { console.warn('[Tribune] Sanity timed out — using static data.'); return null; }
+    const [settings, rawContributors, rawArticles] = result;
 
     // Build contributors map
     const contributors = {};
