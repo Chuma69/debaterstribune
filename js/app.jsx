@@ -265,13 +265,10 @@ function App() {
   }, []);
 
   useE(() => {
-    const on = () => { const r = parseRoute(); setRoute(r); setMeta(metaForRoute(r)); };
+    const on = () => { const r = parseRoute(); setRoute(r); };
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
-
-  // Set meta on initial load
-  useE(() => { setMeta(metaForRoute(route)); }, []);
 
   useE(() => {
     const onKey = (e) => {
@@ -282,6 +279,11 @@ function App() {
   }, []);
 
   useReadingProgress(route);
+
+  // Update meta tags whenever the route changes
+  useE(() => {
+    try { setMeta(metaForRoute(route)); } catch(e) {}
+  }, [route.name, route.slug, route.section, route.id, route.doc]);
 
   useE(() => {
     document.documentElement.style.setProperty("--accent", t.accent);
