@@ -2,23 +2,47 @@
 const { useEffect:useELg } = React;
 
 const LEGAL = {
-  "terms": {
-    title:"Terms of Use",
-    updated:"Last updated 30 May 2026",
-    intro:"These terms govern your use of The Debaters' Tribune, a publication of DebaterVerse Limited. By reading, contributing to, or otherwise using the platform, you agree to them.",
+  “terms”: {
+    title:”Terms of Use”,
+    updated:”Last Updated: 31 May 2026”,
+    intro:”Welcome to Debaters' Tribune, a publication of DebaterVerse Limited. These Terms of Use govern your access to and use of DebatersTribune.com, including all articles, contributor profiles, newsletters, submissions, and related services. By accessing, reading, contributing to, or otherwise using the platform, you agree to these terms.”,
     sections:[
-      { h:"Using the platform", body:[
-        "The Debaters' Tribune is a storytelling archive. You're welcome to read, share and link to our work for personal and non-commercial purposes.",
-        "You agree not to misuse the platform — including attempting to disrupt it, scraping it at scale, or republishing whole pieces without written permission."] },
-      { h:"Contributor submissions", body:[
-        "When you pitch or submit a story, you confirm that the account is your own, that it is truthful to your experience, and that you have the right to share it.",
-        "You retain ownership of your words. By publishing with us, you grant DebaterVerse Limited a non-exclusive, worldwide licence to edit, format, host and distribute your piece across our channels, with attribution."] },
-      { h:"Intellectual property", body:[
-        "All editorial design, branding and compiled content on the platform belongs to DebaterVerse Limited unless otherwise credited. Individual stories remain the work of their named authors."] },
-      { h:"Liability", body:[
-        "The platform is provided “as is”. To the fullest extent permitted by law, DebaterVerse Limited is not liable for any loss arising from your use of it."] },
-      { h:"Changes", body:[
-        "We may update these terms as the platform grows. Material changes will be noted here with a revised date."] },
+      { h:”About Debaters' Tribune”, body:[
+        “Debaters' Tribune is an editorial publication dedicated to preserving the stories, experiences, histories, and human realities of debate communities around the world.”,
+        “The platform exists to document what debate does to people, not simply who wins competitions.”] },
+      { h:”Using the platform”, body:[
+        “You may access, read, share, and link to content published on Debaters' Tribune for personal and non-commercial purposes.”,
+        “You agree not to interfere with or disrupt the operation of the website, attempt unauthorized access to systems, accounts, or data, scrape, harvest, or reproduce content at scale without permission, republish complete articles, essays, interviews, or other content without written authorization, or misrepresent your identity or affiliation when interacting with the platform.”,
+        “We reserve the right to restrict access to any user who violates these terms.”] },
+      { h:”Contributor submissions”, body:[
+        “Debaters' Tribune welcomes pitches, essays, personal narratives, interviews, historical accounts, and other contributions from members of the global debate community.”,
+        “By submitting content, you confirm that the work is your own or you have the right to submit it, the information provided is accurate to the best of your knowledge, the submission does not knowingly infringe on the rights of others, and you have obtained any permissions necessary for third-party materials included in the submission.”,
+        “Submission does not guarantee publication. All submissions are subject to editorial review, fact-checking, editing, and publication decisions at the discretion of Debaters' Tribune.”] },
+      { h:”Rights and ownership”, body:[
+        “Contributors retain ownership of their original work.”,
+        “By publishing with Debaters' Tribune, you grant DebaterVerse Limited a non-exclusive, worldwide, royalty-free license to edit and format the work for publication, host and archive the work indefinitely, distribute the work through the website, newsletters, social media channels, podcasts, video content, and future publication formats, and promote the work with appropriate attribution.”,
+        “Unless otherwise agreed in writing, contributors remain free to republish their work elsewhere.”] },
+      { h:”Editorial independence”, body:[
+        “Debaters' Tribune reserves the right to edit, decline, remove, update, or archive content in accordance with its editorial standards and policies.”,
+        “Publication does not imply endorsement of every opinion expressed by contributors. Views expressed by authors are their own and do not necessarily represent the views of Debaters' Tribune, DebaterVerse Limited, its editors, partners, or affiliates.”] },
+      { h:”Intellectual property”, body:[
+        “The Debaters' Tribune name, branding, visual identity, website design, logos, editorial compilations, and original platform materials are the intellectual property of DebaterVerse Limited unless otherwise indicated.”,
+        “Individual articles, essays, interviews, and contributor content remain the property of their respective authors.”,
+        “Unauthorized commercial use of platform content is prohibited.”] },
+      { h:”Accuracy and historical content”, body:[
+        “Many articles on Debaters' Tribune discuss personal experiences, memories, historical events, and community perspectives.”,
+        “While we strive for accuracy, we do not guarantee that all content will be complete, current, or error-free. Readers should understand that personal narratives and opinion pieces reflect individual viewpoints.”] },
+      { h:”Third-party links”, body:[
+        “The platform may contain links to third-party websites, organizations, tournaments, publications, or resources.”,
+        “Debaters' Tribune is not responsible for the content, availability, or practices of external websites.”] },
+      { h:”Limitation of liability”, body:[
+        “The platform is provided on an \”as is\” and \”as available\” basis.”,
+        “To the fullest extent permitted by applicable law, DebaterVerse Limited shall not be liable for any direct, indirect, incidental, consequential, or special damages arising from use of the platform, inability to access the platform, reliance on published content, or errors, interruptions, or technical failures.”] },
+      { h:”Changes to these terms”, body:[
+        “We may update these Terms of Use as the publication evolves.”,
+        “Material changes will be reflected by updating the \”Last Updated\” date above. Continued use of the platform after changes take effect constitutes acceptance of the revised terms.”] },
+      { h:”Contact”, body:[
+        “Questions regarding these Terms of Use may be directed to DebaterVerse Limited — Debaters' Tribune at hello@debaterstribune.com.”] },
     ],
   },
   "privacy": {
