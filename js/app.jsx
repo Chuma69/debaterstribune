@@ -45,7 +45,7 @@ function Header({ route, onSearch }) {
       backdropFilter: scrolled ? "blur(12px)" : "none",
       borderBottom: "1px solid " + (scrolled ? "var(--hair)" : "transparent"),
       transition: "all .3s" }}>
-      <div className="wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 68, gap: 20 }}>
+      <div className="wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 80, gap: 20 }}>
         <Wordmark small />
         <nav className="desk-nav" style={{ display: "flex", alignItems: "center", gap: 22 }}>
           {nav.map((n) =>

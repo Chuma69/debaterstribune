@@ -40,7 +40,7 @@ function Wordmark({ small=false }){
   // Combination lockup: symbol mark + divider + wordmark
   // Adapted from brand-assets/logos/combination-lockup-reversed.svg
   // Background removed; fills use currentColor + var(--accent) to match theme
-  const h = small ? 48 : 64;
+  const h = small ? 58 : 72;
   return (
     <a href="#/" onClick={(e)=>{e.preventDefault(); go("/");}} aria-label="The Debaters' Tribune"
       style={{display:"block",lineHeight:0}}>
