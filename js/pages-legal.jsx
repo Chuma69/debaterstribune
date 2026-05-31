@@ -151,7 +151,7 @@ function LegalPage({ doc }){
         <hr className="hairline"/>
         <div style={{display:"flex",gap:24,flexWrap:"wrap",marginTop:24}}>
           {others.map(k=>(
-            <a key={k} href={"#/legal/"+k} onClick={(e)=>{e.preventDefault();go("/legal/"+k);}} className="label" style={{color:"var(--accent)"}}>{LEGAL[k].title} →</a>
+            <a key={k} href={"#/"+k} onClick={(e)=>{e.preventDefault();go("/"+k);}} className="label" style={{color:"var(--accent)"}}>{LEGAL[k].title} →</a>
           ))}
         </div>
       </div>

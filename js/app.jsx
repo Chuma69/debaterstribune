@@ -17,7 +17,10 @@ function parseRoute() {
   if (parts[0] === "pitch") return { name: "pitch" };
   if (parts[0] === "about") return { name: "about" };
   if (parts[0] === "contributor") return { name: "profile", id: parts[1] };
-  if (parts[0] === "legal") return { name: "legal", doc: parts[1] };
+  if (parts[0] === "legal") return { name: "legal", doc: parts[1] }; // legacy redirect
+  if (parts[0] === "terms")     return { name: "legal", doc: "terms" };
+  if (parts[0] === "privacy")   return { name: "legal", doc: "privacy" };
+  if (parts[0] === "editorial") return { name: "legal", doc: "editorial" };
   if (parts[0] === "bookmarks")    return { name: "bookmarks" };
   if (parts[0] === "contributors") return { name: "contributors" };
   if (parts[0] === "volunteer")    return { name: "volunteer" };
@@ -130,7 +133,7 @@ function Footer() {
         </div>
         <hr style={{ border: 0, borderTop: "1px solid rgba(244,242,248,0.12)", margin: "40px 0 22px" }} />
         <div style={{ display: "flex", gap: "14px 26px", flexWrap: "wrap", marginBottom: 18 }}>
-          {[{ l: "Terms of Use", a: "/legal/terms" }, { l: "Privacy Policy", a: "/legal/privacy" }, { l: "Editorial Policy", a: "/legal/editorial" }].map((it) =>
+          {[{ l: "Terms of Use", a: "/terms" }, { l: "Privacy Policy", a: "/privacy" }, { l: "Editorial Policy", a: "/editorial" }].map((it) =>
             <a key={it.l} href={"#" + it.a} onClick={(e) => { e.preventDefault(); go(it.a); }}
               className="foot-link mono" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(244,242,248,0.6)" }}>{it.l}</a>
           )}
