@@ -266,7 +266,6 @@ function PitchPage(){
             </button>}
         </div>
         {submitErr && <div className="mono" style={{color:"#d6455f",fontSize:11,letterSpacing:"0.08em",marginTop:12}}>{submitErr.toUpperCase()}</div>}
-        </div>
       </div>
     </div>
   );
