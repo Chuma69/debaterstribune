@@ -86,20 +86,38 @@ const LEGAL = {
   },
   "editorial": {
     title:"Editorial Policy",
-    updated:"Last updated 30 May 2026",
-    intro:"The Debaters' Tribune publishes narrative-driven, first-person storytelling about life inside debate. We prioritise truthfulness of experience over technical precision.",
+    updated:"Last Updated: 31 May 2026",
+    intro:"Debaters' Tribune is an independent publication dedicated to documenting the human experience of debate. We publish stories about identity, ambition, friendship, failure, belonging, transition, memory, and growth. Our focus is not what happened on the ballot. Our focus is what happened to the people holding it. We do not document who won. We document what debate does to people.",
     sections:[
       { h:"What we publish", body:[
-        "Every published piece must be grounded in a real lived experience, written in a clear and personal narrative voice, centred on reflection rather than reporting, free of unnecessary jargon, and structured around a clear story or moment.",
-        "We do not document results, rankings or tabs. We document what debate does to people."] },
-      { h:"How we work with contributors", body:[
-        "We commission as much as we collect. First-time writers can be paired with an editor who develops the story with them — from a voice note or an interview to a finished essay.",
-        "We edit collaboratively and protect the authenticity of each voice. Nothing is published without the contributor in the room. Every piece carries full attribution unless a writer requests anonymity for their safety."] },
+        "We publish narrative-driven writing rooted in lived experience. Every published piece should be grounded in a real experience, event, or reflection; written in a clear and accessible voice; focused on storytelling rather than reporting; driven by insight, memory, or personal perspective; and structured around a meaningful moment, question, tension, or transformation.",
+        "We welcome work from every debate format, circuit, and generation, including voices that have historically been excluded from the dominant narratives of debate.",
+        "Our primary sections are: Essays — personal reflections, lessons, and lived experiences. Histories — stories that preserve people, institutions, and moments from debate's past. Beyond — pieces exploring life after debate and the ways debating continues to shape people beyond competition."] },
+      { h:"What we do not publish", body:[
+        "Debaters' Tribune is not a results archive, rankings platform, or tournament news outlet.",
+        "As a general rule, we do not publish tournament results or rankings, tab summaries or competitive recaps, breaking news coverage, promotional content disguised as editorial work, or personal attacks, harassment, or defamatory content.",
+        "Competition may appear in our stories, but it is never the story itself."] },
+      { h:"Working with contributors", body:[
+        "We commission as much as we collect. Many contributors are first-time writers. We believe important stories should not be limited to people who already know how to write for publication.",
+        "Contributors may work directly with an editor to develop an idea from a written pitch, a conversation, an interview, voice notes, or draft notes and personal reflections.",
+        "Our editorial process is collaborative. We edit for clarity, structure, pacing, and readability while preserving the voice, perspective, and intent of the contributor. Nothing is published without contributor approval.",
+        "Published work is attributed to its author unless anonymity is requested and approved for reasons of privacy, safety, or professional sensitivity."] },
       { h:"Accuracy and fairness", body:[
-        "Personal stories are true to the writer's memory and perspective. Where a piece names other people or institutions, we take reasonable care to be fair and, where appropriate, to seek response.",
-        "Corrections are made promptly and noted transparently."] },
+        "We prioritise truthfulness of experience. Many pieces published by Debaters' Tribune are personal narratives and reflections. These stories represent the author's memory, interpretation, and perspective.",
+        "Where articles discuss identifiable individuals, organisations, or institutions, we take reasonable steps to ensure fairness, accuracy, and context.",
+        "If we discover a significant factual error, we will correct it promptly and transparently."] },
+      { h:"Corrections", body:[
+        "When errors are identified, we aim to correct them as quickly as possible. Substantive corrections may be accompanied by an editor's note explaining what was changed.",
+        "Readers may report potential errors by contacting hello@debaterstribune.com."] },
       { h:"Independence", body:[
-        "Editorial decisions are made independently of any union, tournament or sponsor. We amplify voices from circuits that have long been underrepresented in the global debate narrative."] },
+        "Debaters' Tribune operates independently of tournaments, debate unions, sponsors, leagues, institutions, and governing bodies.",
+        "Editorial decisions are made solely by the publication's editorial team. Partnerships, sponsorships, or financial relationships do not determine what we publish, what we investigate, or whose stories we tell."] },
+      { h:"Representation", body:[
+        "Debate is larger than any single circuit, country, institution, or format.",
+        "We actively seek stories from underrepresented regions, communities, and generations of debaters. Our goal is to build a richer and more complete record of debate's global culture than currently exists.",
+        "No single experience represents debate. The archive grows through many voices."] },
+      { h:"Our standard", body:[
+        "The question that guides every editorial decision is simple: Will this help future debaters better understand what it felt like to be here?"] },
     ],
   },
 };
