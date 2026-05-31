@@ -163,6 +163,18 @@ function useReadingProgress(route) {
   }, [route]);
 }
 
+function Loading() {
+  return (
+    <div style={{ minHeight:"60vh", display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+        style={{ width:48, height:48, animation:"symbolPulse 1.4s ease-in-out infinite" }}>
+        <polygon points="6,8 6,92 47,50" fill="var(--fg)"/>
+        <polygon points="94,8 94,92 53,50" fill="var(--accent)"/>
+      </svg>
+    </div>
+  );
+}
+
 function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [route, setRoute] = useS(parseRoute());
@@ -205,19 +217,22 @@ function App() {
 
   const homeDark = route.name === "home" && t.frontTheme === "dark";
 
+  // Guard against components not yet compiled by Babel
+  const safe = (C, props={}) => typeof C !== "undefined" ? React.createElement(C, props) : <Loading />;
+
   let page;
   switch (route.name) {
-    case "article":   page = <ArticlePage slug={route.slug} />; break;
-    case "archive":   page = <ArchivePage section={route.section} />; break;
-    case "pitch":     page = <PitchPage />; break;
-    case "about":     page = <AboutPage />; break;
-    case "profile":   page = <ProfilePage id={route.id} />; break;
-    case "legal":     page = <LegalPage doc={route.doc} />; break;
-    case "bookmarks":     page = <BookmarksPage />; break;
-    case "contributors":  page = <ContributorsPage />; break;
-    case "volunteer":     page = <VolunteerPage />; break;
-    case "donate":        page = <DonatePage />; break;
-    case "dispatch":      page = <DispatchPage />; break;
+    case "article":   page = safe(ArticlePage,  { slug: route.slug }); break;
+    case "archive":   page = safe(ArchivePage,  { section: route.section }); break;
+    case "pitch":     page = safe(PitchPage); break;
+    case "about":     page = safe(AboutPage); break;
+    case "profile":   page = safe(ProfilePage, { id: route.id }); break;
+    case "legal":     page = safe(LegalPage,   { doc: route.doc }); break;
+    case "bookmarks":     page = safe(BookmarksPage); break;
+    case "contributors":  page = safe(ContributorsPage); break;
+    case "volunteer":     page = typeof VolunteerPage !== "undefined" ? <VolunteerPage /> : <Loading />; break;
+    case "donate":        page = typeof DonatePage    !== "undefined" ? <DonatePage />    : <Loading />; break;
+    case "dispatch":      page = typeof DispatchPage  !== "undefined" ? <DispatchPage />  : <Loading />; break;
     default:          page = <HomePage />;
   }
 
