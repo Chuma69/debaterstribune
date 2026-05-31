@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Debaters' Tribune</title>
+<script>
+  // GitHub Pages SPA redirect — encodes the requested path as a query param
+  // so index.html can restore it via history.replaceState
+  var l = window.location;
+  var base = l.pathname.split('/').slice(0, 2).join('/'); // e.g. /debaterstribune
+  var path = l.pathname.slice(base.length) || '/';
+  l.replace(
+    l.protocol + '//' + l.host + base + '/?p=' +
+    encodeURIComponent(path) + l.hash
+  );
+</script>
+</head>
+<body></body>
+</html>

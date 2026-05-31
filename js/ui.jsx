@@ -1,7 +1,20 @@
 // ui.jsx — shared primitives & components
 const { useState, useEffect, useRef } = React;
 
-function go(hash){ window.location.hash = hash; }
+// Detect base path automatically (works on both localhost and GitHub Pages)
+const BASE = (()=>{
+  try {
+    const s = document.querySelector('script[src*="app.jsx"]');
+    if(!s) return '';
+    return new URL(s.src).pathname.replace(/\/js\/app.*/, '').replace(/\/$/, '');
+  } catch(e){ return ''; }
+})();
+
+function go(path){
+  const url = BASE + path;
+  window.history.pushState(null, '', url);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
 
 function getBookmarks(){ try{ return JSON.parse(localStorage.getItem("dt_bookmarks")||"[]"); }catch(e){ return []; } }
 function toggleBookmark(slug){
@@ -96,7 +109,7 @@ function Wordmark({ small=false }){
   // Background removed; fills use currentColor + var(--accent) to match theme
   const h = small ? 58 : 72;
   return (
-    <a href="#/" onClick={(e)=>{e.preventDefault(); go("/");}} aria-label="The Debaters' Tribune"
+    <a href={BASE+"/"} onClick={(e)=>{e.preventDefault(); go("/");}} aria-label="The Debaters' Tribune"
       style={{display:"block",lineHeight:0}}>
       <svg height={h} viewBox="0 0 820 170" style={{display:"block"}} role="img"
         aria-label="The Debaters' Tribune">
