@@ -20,7 +20,6 @@ export default {
   groups: [
     { name: 'identity', title: 'Identity', default: true },
     { name: 'debate',   title: 'Debate background' },
-    { name: 'writing',  title: 'Writing' },
   ],
   fields: [
 
@@ -56,6 +55,15 @@ export default {
       group: 'identity',
       validation: R => R.required(),
     },
+    {
+      name: 'bio',
+      title: 'Bio',
+      description: '2–3 sentences about who they are and what they write about.',
+      type: 'text',
+      rows: 3,
+      group: 'identity',
+      validation: R => R.required().max(400),
+    },
 
     // ── Debate background ─────────────────────────────────────────────────────
     {
@@ -90,54 +98,6 @@ export default {
       group: 'debate',
       options: { list: CIRCUIT_LIST },
       validation: R => R.required(),
-    },
-    {
-      name: 'formats',
-      title: 'Debate format(s)',
-      description: 'The format(s) they competed or adjudicated in.',
-      type: 'array',
-      group: 'debate',
-      of: [{ type: 'string' }],
-      options: {
-        layout: 'tags',
-        list: [
-          { title: 'British Parliamentary (BP)', value: 'BP' },
-          { title: 'African Parliamentary (AP)', value: 'AP' },
-          { title: 'World Schools (WSDC)',        value: 'World Schools' },
-          { title: 'Policy',                     value: 'Policy' },
-          { title: 'Lincoln-Douglas (LD)',        value: 'LD' },
-          { title: 'Public Forum (PF)',           value: 'PF' },
-          { title: 'Karl Popper',                value: 'Karl Popper' },
-        ],
-      },
-    },
-
-    // ── Writing ───────────────────────────────────────────────────────────────
-    {
-      name: 'sections',
-      title: 'Writes for',
-      description: 'Which parts of the Tribune this contributor writes for.',
-      type: 'array',
-      group: 'writing',
-      of: [{ type: 'string' }],
-      options: {
-        layout: 'tags',
-        list: [
-          { title: '01 — Essays (personal reflections)', value: 'essays' },
-          { title: '02 — Histories (circuits & eras)',   value: 'histories' },
-          { title: '03 — Beyond (life after debate)',    value: 'beyond' },
-        ],
-      },
-      validation: R => R.required().min(1),
-    },
-    {
-      name: 'bio',
-      title: 'Bio',
-      description: '2–3 sentences about who they are and what they write about.',
-      type: 'text',
-      rows: 3,
-      group: 'writing',
-      validation: R => R.required().max(400),
     },
   ],
 
