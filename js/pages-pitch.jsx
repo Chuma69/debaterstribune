@@ -17,17 +17,17 @@ async function submitToNotion(f) {
   const body = {
     parent: { database_id: NOTION_DB_ID },
     properties: {
-      "Name":           { title:      [{ text: { content: f.name } }] },
-      "Email":          { email:      f.email },
-      "Role":           { select:     { name: f.role } },
-      "Region":         { rich_text:  [{ text: { content: f.region || "" } }] },
-      "Title":          { rich_text:  [{ text: { content: f.title } }] },
-      "Section":        { select:     { name: SECTION_NAMES[f.section] || f.section } },
-      "Format":         { select:     { name: FORMAT_NAMES[f.format] || f.format } },
-      "Summary":        { rich_text:  [{ text: { content: f.summary + draftNote } }] },
-      "Editor support": { checkbox:   f.support },
-      "Submitted":      { date:       { start: new Date().toISOString().slice(0,10) } },
-      "Status":         { select:     { name: "New" } },
+      "Name":                 { title:     [{ text: { content: f.name } }] },
+      "Email":                { email:     f.email },
+      "Profile":              { select:    { name: f.role } },
+      "Circuit":              { rich_text: [{ text: { content: f.region || "" } }] },
+      "Title":                { rich_text: [{ text: { content: f.title } }] },
+      "Section":              { select:    { name: SECTION_NAMES[f.section] || f.section } },
+      "Format":               { select:    { name: FORMAT_NAMES[f.format] || f.format } },
+      "Story":                { rich_text: [{ text: { content: f.summary + draftNote } }] },
+      "Need Editor support?": { checkbox:  f.support },
+      "Submitted":            { date:      { start: new Date().toISOString().slice(0,10) } },
+      "Status":               { select:    { name: "New" } },
     },
     // If they pasted a link, add it as a bookmark block on the page
     children: f.draftLink ? [
