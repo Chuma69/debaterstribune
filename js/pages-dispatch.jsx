@@ -1,5 +1,5 @@
 // pages-dispatch.jsx — The Dispatch standalone page
-const { useState:useSDis, useEffect:useEDis } = React;
+const { useState, useEffect:useEDis } = React;
 
 const PAST_ISSUES = [
   {
