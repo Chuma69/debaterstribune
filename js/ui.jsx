@@ -15,15 +15,39 @@ function toggleBookmark(slug){
 function isBookmarked(slug){ return getBookmarks().includes(slug); }
 function shareArticle(article){
   const url = window.location.href.split("#")[0] + "#/read/" + article.slug;
+
+  const toast = (msg) => window.dispatchEvent(new CustomEvent("show_toast", { detail: msg }));
+
+  // Fallback: legacy execCommand copy via a temp textarea
+  const execCopy = () => {
+    const el = document.createElement("textarea");
+    el.value = url;
+    el.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+    document.body.appendChild(el);
+    el.focus(); el.select();
+    try {
+      document.execCommand("copy");
+      toast("Link copied to clipboard");
+    } catch(e) {
+      toast("Copy this link: " + url);
+    }
+    document.body.removeChild(el);
+  };
+
+  // 1. Native share sheet (mobile)
   if(navigator.share){
     navigator.share({ title: article.title, text: article.dek, url }).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(url).then(()=>{
-      window.dispatchEvent(new CustomEvent("show_toast", { detail:"Link copied to clipboard" }));
-    }).catch(()=>{
-      window.dispatchEvent(new CustomEvent("show_toast", { detail:"Copy the URL from your address bar" }));
-    });
+    return;
   }
+  // 2. Modern clipboard API
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(url)
+      .then(() => toast("Link copied to clipboard"))
+      .catch(() => execCopy());
+    return;
+  }
+  // 3. Legacy execCommand fallback
+  execCopy();
 }
 
 function Mark({ size=26, color="currentColor" }){
