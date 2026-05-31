@@ -140,7 +140,9 @@ html.do-reveal .fadeup.in{opacity:1;transform:none;}
 
 input,textarea,select{font-family:var(--ff-sans);font-size:15px;color:var(--fg);}
 
-#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--paper);z-index:9999;font-family:"Bodoni Moda",serif;font-size:28px;letter-spacing:.02em;transition:opacity .5s;}
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink);z-index:9999;transition:opacity .5s;}
+#loading svg{width:72px;height:72px;animation:symbolPulse 1.4s ease-in-out infinite;}
+@keyframes symbolPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.92);}}
 
 /* hover */
 .card-hover h3,.card-hover h2{transition:color .25s;}
@@ -249,7 +251,12 @@ body.type-grand h2{letter-spacing:-0.03em !important;}
 </style>
 </head>
 <body>
-<div id="loading">The Debaters' Tribune<span style="color:var(--violet)">.</span></div>
+<div id="loading">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <polygon points="6,8 6,92 47,50" fill="#F4F2F8"/>
+    <polygon points="94,8 94,92 53,50" fill="#7A37CF"/>
+  </svg>
+</div>
 <div id="read-progress"></div>
 <div id="root"></div>
 
