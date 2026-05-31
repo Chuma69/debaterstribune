@@ -18,8 +18,11 @@ function parseRoute() {
   if (parts[0] === "about") return { name: "about" };
   if (parts[0] === "contributor") return { name: "profile", id: parts[1] };
   if (parts[0] === "legal") return { name: "legal", doc: parts[1] };
-  if (parts[0] === "bookmarks") return { name: "bookmarks" };
+  if (parts[0] === "bookmarks")    return { name: "bookmarks" };
   if (parts[0] === "contributors") return { name: "contributors" };
+  if (parts[0] === "volunteer")    return { name: "volunteer" };
+  if (parts[0] === "donate")       return { name: "donate" };
+  if (parts[0] === "dispatch")     return { name: "dispatch" };
   return { name: "home" };
 }
 
@@ -111,8 +114,8 @@ function Footer() {
           </div>
           {[
             { h: "Read", items: [{ l: "All Stories", a: "/section/all" }, ...SECTIONS.map((s) => ({ l: s.name, a: "/section/" + s.id }))] },
-            { h: "Contribute", items: [{ l: "Pitch a story", a: "/pitch" }, { l: "Contributors", a: "/contributors" }, { l: "Volunteer", a: "/about" }, { l: "Donate", a: "/about" }] },
-            { h: "The platform", items: [{ l: "About", a: "/about" }, { l: "All Stories", a: "/section/all" }, { l: "The dispatch", a: "/about" }, { l: "Saved stories", a: "/bookmarks" }] }
+            { h: "Contribute", items: [{ l: "Pitch a story", a: "/pitch" }, { l: "Contributors", a: "/contributors" }, { l: "Volunteer", a: "/volunteer" }, { l: "Donate", a: "/donate" }] },
+            { h: "The platform", items: [{ l: "About", a: "/about" }, { l: "All Stories", a: "/section/all" }, { l: "The Dispatch", a: "/dispatch" }, { l: "Saved stories", a: "/bookmarks" }] }
           ].map((col) =>
             <div key={col.h}>
               <div className="label" style={{ color: "rgba(244,242,248,0.5)", marginBottom: 16 }}>{col.h}</div>
@@ -215,6 +218,9 @@ function App() {
     case "legal":     page = <LegalPage doc={route.doc} />; break;
     case "bookmarks":     page = <BookmarksPage />; break;
     case "contributors":  page = <ContributorsPage />; break;
+    case "volunteer":     page = <VolunteerPage />; break;
+    case "donate":        page = <DonatePage />; break;
+    case "dispatch":      page = <DispatchPage />; break;
     default:          page = <HomePage />;
   }
 
