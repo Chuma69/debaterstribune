@@ -180,6 +180,16 @@ function App() {
   const [route, setRoute] = useS(parseRoute());
   const [searchOpen, setSearchOpen] = useS(false);
   const [cmsReady, setCmsReady] = useS(true); // render immediately with static data
+  const [, forceUpdate] = useS(0); // used to re-render when late Babel scripts finish
+
+  // Poll until all late-loading page components are available, then re-render
+  useE(() => {
+    const pages = ['VolunteerPage','DonatePage','DispatchPage','ContributorsPage','BookmarksPage','LegalPage'];
+    const ready = () => pages.every(p => typeof window[p] !== 'undefined');
+    if(ready()) return;
+    const id = setInterval(() => { if(ready()){ clearInterval(id); forceUpdate(n => n+1); } }, 200);
+    return () => clearInterval(id);
+  }, []);
 
   // On mount: try to load live content from Sanity in the background.
   // Static placeholders are always visible — Sanity content swaps in if available.
