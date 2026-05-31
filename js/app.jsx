@@ -1,27 +1,6 @@
 // app.jsx — router, chrome, tweaks, mount
 const { useState: useS, useEffect: useE, useRef: useR } = React;
 
-const SITE = "The Debaters' Tribune";
-
-function titleForRoute(route) {
-  const map = {
-    home: null, pitch: "Pitch a story", about: "About",
-    contributors: "Contributors", bookmarks: "Saved stories",
-    volunteer: "Volunteer", donate: "Support the Tribune",
-    dispatch: "The Dispatch",
-  };
-  if (route.name === "article")  return null; // set by ArticlePage itself
-  if (route.name === "archive")  return route.section && route.section !== "all" ? ({ essays:"Essays", histories:"Histories", beyond:"Beyond" })[route.section] : "All Stories";
-  if (route.name === "profile")  return null;
-  if (route.name === "legal")    return ({ terms:"Terms of Use", privacy:"Privacy Policy", editorial:"Editorial Policy" })[route.doc] || "Legal";
-  const t = map[route.name];
-  return t !== undefined ? t : null;
-}
-
-function setPageTitle(title) {
-  document.title = title ? title + " — " + SITE : SITE;
-}
-
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "frontTheme": "light",
   "accent": "#7A37CF",
@@ -203,7 +182,7 @@ function App() {
   }, []);
 
   useE(() => {
-    const on = () => { const r = parseRoute(); setRoute(r); setPageTitle(titleForRoute(r)); };
+    const on = () => setRoute(parseRoute());
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
@@ -217,9 +196,6 @@ function App() {
   }, []);
 
   useReadingProgress(route);
-
-  // Set initial page title on mount
-  useE(() => { setPageTitle(titleForRoute(route)); }, []);
 
   useE(() => {
     document.documentElement.style.setProperty("--accent", t.accent);
