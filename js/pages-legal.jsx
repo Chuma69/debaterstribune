@@ -47,19 +47,41 @@ const LEGAL = {
   },
   "privacy": {
     title:"Privacy Policy",
-    updated:"Last updated 30 May 2026",
-    intro:"This policy explains what we collect, why, and the choices you have. We collect as little as we can, and we never sell your data.",
+    updated:"Last Updated: 31 May 2026",
+    intro:"At Debaters' Tribune, we believe stories should be shared, not personal data. This Privacy Policy explains what information we collect, how we use it, and the choices you have regarding your information when you visit DebatersTribune.com. Our approach is simple: we collect only the information we need to operate the publication and serve our readers, contributors, and community.",
     sections:[
-      { h:"What we collect", body:[
-        "If you subscribe to the dispatch, we store the first name and email address you give us.",
-        "If you pitch a story, we store the details you submit — your name, contact, and the pitch itself — so an editor can respond.",
-        "We collect basic, anonymised analytics about how pages are used, to understand what stories resonate."] },
-      { h:"How we use it", body:[
-        "To send you the stories you asked for, to develop and publish work with you, and to improve the platform. Nothing more."] },
-      { h:"Sharing", body:[
-        "We do not sell or rent your information. We share it only with the service providers that help us run the platform (for example, our email tool), under agreements that protect it."] },
-      { h:"Your choices", body:[
-        "You can unsubscribe from the dispatch at any time using the link in any email. You can ask us to access or delete the personal data we hold about you by writing to privacy@thedebaterstribune.com."] },
+      { h:"Information we collect", body:[
+        "Newsletter subscriptions: When you subscribe to The Dispatch or any of our newsletters, we collect your first name and email address. This information is used solely to send you the content you requested and to communicate with you about the publication.",
+        "Story pitches and contributor submissions: When you submit a pitch or contribution, we may collect your name, email address, professional or contributor information, the content of your submission, and any supporting materials you provide. We use this to review submissions, communicate with contributors, and manage the editorial process.",
+        "Website analytics: We collect limited analytics to understand how readers use the site — pages visited, referral sources, device and browser information, general geographic region, and time spent on pages. Where possible, this is aggregated and anonymised. We do not use analytics to identify individual readers."] },
+      { h:"How we use information", body:[
+        "We use the information we collect to deliver newsletters and updates you request, review and manage contributor submissions, respond to inquiries and correspondence, improve the website and editorial experience, understand what content is valuable to readers, and maintain the security and reliability of the platform.",
+        "We do not use your information for unrelated advertising purposes."] },
+      { h:"Sharing information", body:[
+        "We do not sell, rent, or trade personal information.",
+        "We may share information only with trusted service providers that help us operate the publication — such as email delivery providers, website hosting and infrastructure providers, analytics services, and content management platforms. These providers may access information only as necessary to perform services on our behalf and are required to protect it appropriately.",
+        "We may also disclose information when required by law or when necessary to protect the rights, safety, or integrity of Debaters' Tribune, its contributors, or its readers."] },
+      { h:"Contributor content", body:[
+        "Information that contributors choose to publish as part of an article, biography, interview, or contributor profile may become publicly available on the website.",
+        "Contributors should carefully consider what information they choose to include in published content."] },
+      { h:"Data retention", body:[
+        "We retain personal information only for as long as reasonably necessary to provide requested services, maintain publication records, fulfil legal and operational obligations, and preserve published archives.",
+        "Published articles and contributor records may remain archived indefinitely as part of the historical record of the publication."] },
+      { h:"Your rights and choices", body:[
+        "Depending on your location and applicable law, you may have the right to access personal information we hold about you, correct inaccurate information, request deletion of personal information, withdraw consent to receive communications, and request information about how your data is used.",
+        "You may unsubscribe from newsletters at any time using the unsubscribe link included in every email.",
+        "To request access, correction, or deletion of personal information, contact privacy@debaterstribune.com. We will respond within a reasonable timeframe and in accordance with applicable law."] },
+      { h:"Cookies", body:[
+        "Debaters' Tribune may use essential cookies and similar technologies required for site functionality, security, analytics, and performance.",
+        "We do not use cookies to build advertising profiles or sell audience data."] },
+      { h:"Third-party services", body:[
+        "The website may contain links to third-party websites, publications, tournaments, organisations, and resources.",
+        "We are not responsible for the privacy practices of external sites and encourage users to review their policies separately."] },
+      { h:"Changes to this policy", body:[
+        "We may update this Privacy Policy from time to time as the publication evolves. When significant changes are made, the revised date at the top of this page will be updated.",
+        "Continued use of the platform after updates take effect constitutes acceptance of the revised policy."] },
+      { h:"Contact", body:[
+        "Questions regarding this Privacy Policy may be directed to Debaters' Tribune — DebaterVerse Limited at hello@debaterstribune.com."] },
     ],
   },
   "editorial": {
