@@ -36,14 +36,43 @@ const ARTICLE_QUERY = `
 
 function ptToBlocks(body) {
   if (!body || !Array.isArray(body)) return [];
-  return body.flatMap(node => {
-    if (node._type !== 'block') return [];
+  const result = [];
+  let currentList = null; // tracks the active list block being built
+
+  for (const node of body) {
+    if (node._type !== 'block') continue;
     const text = (node.children || []).map(c => c.text || '').join('');
-    if (!text.trim()) return [];
-    if (node.style === 'h2')         return [{ t: 'h', v: text }];
-    if (node.style === 'blockquote') return [{ t: 'q', v: text }];
-    return [{ t: 'p', v: text }];
-  });
+    if (!text.trim()) continue;
+
+    // Bullet list item
+    if (node.listItem === 'bullet') {
+      if (!currentList || currentList.t !== 'ul') {
+        currentList = { t: 'ul', v: [] };
+        result.push(currentList);
+      }
+      currentList.v.push(text);
+      continue;
+    }
+
+    // Numbered list item
+    if (node.listItem === 'number') {
+      if (!currentList || currentList.t !== 'ol') {
+        currentList = { t: 'ol', v: [] };
+        result.push(currentList);
+      }
+      currentList.v.push(text);
+      continue;
+    }
+
+    // Non-list block — close any open list
+    currentList = null;
+
+    if (node.style === 'h2')         { result.push({ t: 'h', v: text }); continue; }
+    if (node.style === 'blockquote') { result.push({ t: 'q', v: text }); continue; }
+    result.push({ t: 'p', v: text });
+  }
+
+  return result;
 }
 
 // ── Date formatter ────────────────────────────────────────────────────────────

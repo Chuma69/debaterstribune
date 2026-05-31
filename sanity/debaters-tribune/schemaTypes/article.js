@@ -62,6 +62,10 @@ export default {
             { title: 'Section heading', value: 'h2' },
             { title: 'Pull quote',      value: 'blockquote' },
           ],
+          lists: [
+            { title: 'Bullet list',   value: 'bullet' },
+            { title: 'Numbered list', value: 'number' },
+          ],
           marks: {
             decorators: [
               { title: 'Italic', value: 'em' },

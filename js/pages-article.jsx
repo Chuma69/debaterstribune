@@ -111,9 +111,26 @@ function AudioPlayer({ article, author }){
   );
 }
 
+const LIST_ITEM_STYLE = {
+  fontFamily:"var(--ff-body)",fontSize:"clamp(18px,1.45vw,21px)",
+  lineHeight:1.62,color:"var(--fg)"
+};
+
 function Block({ b }){
   if(b.t==="h") return <h2 style={{fontFamily:"var(--ff-display)",fontWeight:700,fontSize:"clamp(24px,2.8vw,34px)",
     lineHeight:1.08,letterSpacing:"-0.015em",margin:"44px 0 4px"}}>{b.v}</h2>;
+
+  if(b.t==="ul") return (
+    <ul style={{margin:"22px 0",paddingLeft:"clamp(20px,2vw,28px)",display:"flex",flexDirection:"column",gap:10}}>
+      {b.v.map((item,i)=><li key={i} style={LIST_ITEM_STYLE}>{item}</li>)}
+    </ul>
+  );
+  if(b.t==="ol") return (
+    <ol style={{margin:"22px 0",paddingLeft:"clamp(20px,2vw,28px)",display:"flex",flexDirection:"column",gap:10}}>
+      {b.v.map((item,i)=><li key={i} style={LIST_ITEM_STYLE}>{item}</li>)}
+    </ol>
+  );
+
   if(b.t==="q") return (
     <blockquote style={{margin:"40px 0",position:"relative",paddingLeft:8}}>
       <span aria-hidden="true" style={{position:"absolute",left:-14,top:-44,fontFamily:"var(--ff-display)",
