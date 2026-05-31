@@ -162,8 +162,8 @@ function PitchPage(){
                 {SECTIONS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
             </Field>
-            <Field label="What's the story?" hint={f.summary.trim().length+" / 40 min"} error={errs.summary}>
-              <textarea style={{...inputStyle,minHeight:140,resize:"vertical",lineHeight:1.5}} value={f.summary} onChange={e=>set("summary",e.target.value)}
+            <Field label="What's the story?" hint={f.summary.trim().length+" / 2,000"} error={errs.summary}>
+              <textarea style={{...inputStyle,minHeight:140,resize:"vertical",lineHeight:1.5}} value={f.summary} maxLength={2000} onChange={e=>set("summary",e.target.value)}
                 placeholder="Don't pitch a topic — tell us a moment. What happened, and why does it still sit with you?"/>
             </Field>
           </div>
