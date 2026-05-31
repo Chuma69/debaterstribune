@@ -1,71 +1,103 @@
 // pages-archive.jsx
-const { useState:useSAr, useEffect:useEAr } = React;
+const { useState:useSAr, useEffect:useEAr, useMemo:useMMAr } = React;
 
 function ArchivePage({ section }){
-  const [filter, setFilter] = useSAr("all");
-  const sec = sectionById(section);
-  const isAll = section === "all" || !sec;
-  const articles = articlesBySection(isAll ? "all" : section);
+  const [activeSection, setActiveSection] = useSAr(section === "all" || !sectionById(section) ? "all" : section);
+  const [q, setQ] = useSAr("");
   useEAr(()=>{ window.scrollTo(0,0); },[section]);
 
-  const filtered = filter === "all" ? articles :
-    articles.filter(a => (a.tags||[]).includes(filter) || a.circuit === filter || a.author === filter);
+  // Sync active section chip when URL changes
+  useEAr(()=>{
+    setActiveSection(section === "all" || !sectionById(section) ? "all" : section);
+    setQ("");
+  },[section]);
 
-  const allTags = [...new Set(articles.flatMap(a=>a.tags||[]))].slice(0,10);
+  const filtered = useMMAr(()=>{
+    let list = activeSection === "all" ? ARTICLES : ARTICLES.filter(a => a.section === activeSection);
+    if(q.trim().length >= 2){
+      const query = q.toLowerCase();
+      list = list.filter(a =>
+        a.title.toLowerCase().includes(query) ||
+        a.dek.toLowerCase().includes(query) ||
+        (contributor(a.author)?.name||"").toLowerCase().includes(query)
+      );
+    }
+    return list;
+  },[activeSection, q]);
 
-  const title = isAll ? "All Stories" : sec.name;
-  const blurb = isAll ? "Every essay, history and reflection published in the Tribune — in reverse chronological order." : sec.blurb;
+  const Chip = ({id, label}) => {
+    const active = activeSection === id;
+    return (
+      <button onClick={()=>{ setActiveSection(id); go("/section/"+id); }}
+        className="mono" style={{
+          fontSize:11,letterSpacing:"0.1em",textTransform:"uppercase",
+          padding:"9px 16px",borderRadius:2,
+          border:"1px solid "+(active?"var(--accent)":"var(--hair)"),
+          background:active?"var(--accent)":"transparent",
+          color:active?"#fff":"var(--fg-muted)",
+          transition:"all .2s"
+        }}>{label}</button>
+    );
+  };
+
+  const title = activeSection === "all" ? "All Stories" : (sectionById(activeSection)?.name || "All Stories");
+  const blurb = activeSection === "all"
+    ? "Every essay, history and reflection published in the Tribune — in reverse chronological order."
+    : sectionById(activeSection)?.blurb;
 
   return (
     <div className="route-enter">
-      <header style={{paddingTop:"clamp(48px,7vw,88px)",paddingBottom:"clamp(32px,4vw,56px)"}}>
+      <header style={{paddingTop:"clamp(48px,7vw,88px)",paddingBottom:"clamp(32px,4vw,48px)"}}>
         <div className="wrap">
-          <div className="kicker">{isAll ? "Archive" : "Section · " + (sec?.num||"")}</div>
+          <div className="kicker">Archive</div>
           <h1 style={{fontFamily:"var(--ff-display)",fontWeight:800,fontSize:"clamp(40px,6vw,80px)",
             lineHeight:0.98,letterSpacing:"-0.025em",marginTop:16,maxWidth:"14ch"}}>{title}</h1>
           <p style={{fontFamily:"var(--ff-body)",fontSize:"clamp(17px,1.5vw,20px)",lineHeight:1.55,
             color:"var(--fg-muted)",marginTop:18,maxWidth:"52ch"}}>{blurb}</p>
-
-          {!isAll && (
-            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:28}}>
-              {SECTIONS.map(s=>(
-                <a key={s.id} href={"#/section/"+s.id} onClick={(e)=>{e.preventDefault();go("/section/"+s.id);}}
-                  className="btn" style={{fontSize:12,padding:"9px 18px",
-                    background:section===s.id?"var(--accent)":"transparent",
-                    color:section===s.id?"#fff":"var(--fg)",
-                    border:"1px solid "+(section===s.id?"var(--accent)":"var(--hair)")}}>{s.name}</a>
-              ))}
-            </div>
-          )}
         </div>
       </header>
 
-      {allTags.length > 0 && (
-        <div className="wrap" style={{marginBottom:32}}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
-            <span className="label" style={{marginRight:4}}>Filter:</span>
-            <button onClick={()=>setFilter("all")} className="mono"
-              style={{fontSize:10.5,letterSpacing:"0.1em",textTransform:"uppercase",
-                padding:"6px 14px",border:"1px solid var(--hair)",borderRadius:2,
-                background:filter==="all"?"var(--accent)":"transparent",
-                color:filter==="all"?"#fff":"var(--fg-muted)"}}>All</button>
-            {allTags.map(tag=>(
-              <button key={tag} onClick={()=>setFilter(tag===filter?"all":tag)} className="mono"
-                style={{fontSize:10.5,letterSpacing:"0.1em",textTransform:"uppercase",
-                  padding:"6px 14px",border:"1px solid var(--hair)",borderRadius:2,
-                  background:filter===tag?"var(--accent)":"transparent",
-                  color:filter===tag?"#fff":"var(--fg-muted)"}}>{tag}</button>
-            ))}
+      {/* filter bar */}
+      <div style={{position:"sticky",top:0,zIndex:40,
+        background:"color-mix(in oklab, var(--bg), transparent 4%)",
+        backdropFilter:"blur(10px)",
+        borderTop:"1px solid var(--hair)",borderBottom:"1px solid var(--hair)"}}>
+        <div className="wrap" style={{display:"flex",gap:10,alignItems:"center",
+          flexWrap:"wrap",padding:"12px 32px"}}>
+          <Chip id="all"       label="All" />
+          <Chip id="essays"    label="Essays" />
+          <Chip id="histories" label="Histories" />
+          <Chip id="beyond"    label="Beyond" />
+          <div style={{flex:1}}/>
+          <div style={{position:"relative",display:"flex",alignItems:"center"}}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-muted)"
+              strokeWidth="2" style={{position:"absolute",left:10,pointerEvents:"none"}}>
+              <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input value={q} onChange={e=>setQ(e.target.value)}
+              placeholder="Search stories…"
+              style={{paddingLeft:32,paddingRight:14,paddingTop:9,paddingBottom:9,
+                width:"min(240px,100%)",border:"1px solid var(--hair)",borderRadius:2,
+                background:"transparent",outline:"none",fontSize:13,
+                fontFamily:"var(--ff-sans)",color:"var(--fg)"}}/>
           </div>
         </div>
-      )}
+      </div>
 
-      <div className="wrap">
+      <div className="wrap" style={{paddingTop:"clamp(32px,4vw,52px)"}}>
+        <div className="label" style={{marginBottom:"clamp(20px,2.5vw,32px)"}}>
+          {filtered.length} {filtered.length===1?"story":"stories"}
+        </div>
         <hr className="hairline" style={{marginBottom:40}}/>
+
         {filtered.length === 0 ? (
-          <p style={{fontFamily:"var(--ff-body)",fontSize:18,color:"var(--fg-muted)",padding:"40px 0"}}>
-            No stories match that filter.
-          </p>
+          <div style={{padding:"clamp(40px,6vw,80px) 0",textAlign:"center"}}>
+            <p style={{fontFamily:"var(--ff-display)",fontStyle:"italic",fontSize:24,color:"var(--fg-muted)"}}>
+              No stories match.
+            </p>
+            <button onClick={()=>{setActiveSection("all");setQ("");}}
+              className="btn btn-ghost" style={{marginTop:20}}>Clear filters</button>
+          </div>
         ) : (
           <>
             {filtered[0] && (
