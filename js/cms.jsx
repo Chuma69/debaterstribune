@@ -2,8 +2,8 @@
 // Replace SANITY_PROJECT_ID with your project ID from sanity.io/manage
 // Leave SANITY_CONFIGURED = false until you have a real project ID.
 
-const SANITY_CONFIGURED = false; // ← flip to true once you add your project ID
-const SANITY_PROJECT_ID  = 'YOUR_PROJECT_ID'; // ← paste from sanity.io/manage
+const SANITY_CONFIGURED = true;
+const SANITY_PROJECT_ID  = '1eyxn40r';
 const SANITY_DATASET     = 'production';
 const SANITY_API_VERSION = '2024-01-01';
 
