@@ -12,7 +12,7 @@ const SECTIONS = [
     line:"Beyond the circuit" },
 ];
 
-const CIRCUITS = ["West Africa","East Africa","South Africa","Europe","North America","South America","South Asia","Southeast Asia"];
+const CIRCUITS = ["West Africa","East Africa","Southern Africa","North Africa","Europe","North America","South America","South Asia","Southeast Asia","Middle East","Global"];
 
 const FRANCHISES = [
   { id:"the-ballot", name:"The Ballot", note:"One round that defined them." },

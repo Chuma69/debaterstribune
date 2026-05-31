@@ -163,7 +163,12 @@ function PitchPage(){
               <Field label="Your name" error={errs.name}><input style={inputStyle} value={f.name} onChange={e=>set("name",e.target.value)} placeholder="How you'd like to be credited"/></Field>
               <Field label="Email" error={errs.email}><input style={inputStyle} value={f.email} onChange={e=>set("email",e.target.value)} placeholder="you@example.com"/></Field>
             </div>
-            <Field label="Circuit / region" hint="optional"><input style={inputStyle} value={f.region} onChange={e=>set("region",e.target.value)} placeholder="e.g. Lagos · WSDC · East Africa"/></Field>
+            <Field label="Circuit" hint="optional">
+              <select style={inputStyle} value={f.region} onChange={e=>set("region",e.target.value)}>
+                <option value="">Select a circuit…</option>
+                {CIRCUITS.map(c=><option key={c} value={c}>{c}</option>)}
+              </select>
+            </Field>
           </div>
         )}
 
