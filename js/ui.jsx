@@ -37,14 +37,29 @@ function Mark({ size=26, color="currentColor" }){
 }
 
 function Wordmark({ small=false }){
-  const h = small ? 34 : 52;
+  // Combination lockup: symbol mark + divider + wordmark
+  // Adapted from brand-assets/logos/combination-lockup-reversed.svg
+  // Background removed; fills use currentColor + var(--accent) to match theme
+  const h = small ? 36 : 56;
   return (
-    <a href="#/" onClick={(e)=>{e.preventDefault(); go("/");}} aria-label="The Debaters' Tribune" style={{display:"block",lineHeight:0}}>
-      <svg height={h} viewBox="0 0 620 140" style={{display:"block",overflow:"visible"}} role="img">
-        <line x1="20" y1="30" x2="600" y2="30" stroke="currentColor" strokeWidth="2"/>
-        <text x="310" y="104" textAnchor="middle" textLength="580" lengthAdjust="spacingAndGlyphs"
-          fontFamily="'Bodoni Moda', Georgia, serif" fontWeight="800" fontSize="72" fill="currentColor">Debaters' Tribune<tspan fill="var(--accent)">.</tspan></text>
-        <line x1="20" y1="120" x2="600" y2="120" stroke="currentColor" strokeWidth="2"/>
+    <a href="#/" onClick={(e)=>{e.preventDefault(); go("/");}} aria-label="The Debaters' Tribune"
+      style={{display:"block",lineHeight:0}}>
+      <svg height={h} viewBox="0 0 820 170" style={{display:"block"}} role="img"
+        aria-label="The Debaters' Tribune">
+        {/* Symbol mark */}
+        <g transform="translate(24,30) scale(1.1)">
+          <polygon points="6,8 6,92 47,50"  fill="currentColor"/>
+          <polygon points="94,8 94,92 53,50" fill="var(--accent)"/>
+        </g>
+        {/* Vertical divider */}
+        <line x1="178" y1="40" x2="178" y2="130" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
+        {/* Horizontal rules */}
+        <line x1="210" y1="56"  x2="800" y2="56"  stroke="currentColor" strokeWidth="2"/>
+        <line x1="210" y1="132" x2="800" y2="132" stroke="currentColor" strokeWidth="2"/>
+        {/* Wordmark */}
+        <text x="505" y="116" textAnchor="middle" textLength="590" lengthAdjust="spacingAndGlyphs"
+          fontFamily="'Bodoni Moda', Georgia, serif" fontWeight="800" fontSize="58"
+          fill="currentColor">Debaters' Tribune<tspan fill="var(--accent)">.</tspan></text>
       </svg>
     </a>
   );
